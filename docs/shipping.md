@@ -54,5 +54,9 @@ for the secrets and variables it needs.
 
 ## macOS
 
+The in-game Steam overlay (Shift+Tab) does not appear on macOS with Electron. This is a known Electron limit
+([electron#42656](https://github.com/electron/electron/issues/42656)), not a problem in your game. Everything else
+(achievements, stats, cloud saves, user info) works. Do not make the overlay a required part of your game.
+
 cartridge does not sign or notarize yet. Steam can start unsigned apps, but some players may see a warning. Sign the `.app` with
 `codesign` (and notarize) before upload if you have an Apple Developer account.

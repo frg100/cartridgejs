@@ -75,6 +75,10 @@ See [docs/architecture.md](docs/architecture.md).
 - Electron only. Builds are about 270–310 MB because they include Chromium.
 - A universal macOS build needs a Mac (`lipo`). On Linux and Windows, cartridge makes an x64 macOS build.
 - No code signing or notarization yet.
+- **No in-game Steam overlay on macOS.** Steam does not draw its overlay into Electron windows on macOS
+  ([electron#42656](https://github.com/electron/electron/issues/42656), closed as "not planned").
+  Achievements, stats, cloud saves and the user API work on macOS. Overlay calls open the page in Steam's own window.
+  On Windows and Linux, the overlay is expected to work when Steam starts the game (not in `cartridge dev`).
 - Steam features: achievements, int stats, cloud files, user, rich presence, overlay. No lobbies, networking, Workshop or Steam Input yet.
 
 ## Roadmap
