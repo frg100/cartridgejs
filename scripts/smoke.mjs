@@ -2,8 +2,7 @@
 // Usage: xvfb-run -a node scripts/smoke.mjs <path-to-executable>
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
-let playwright;
-try { playwright = require('playwright'); } catch { playwright = require(require.resolve('playwright', { paths: ['/usr/lib/node_modules', '/usr/local/lib/node_modules'] })); }
+const playwright = require('playwright'); // root devDependency; Electron mode needs no browser download
 
 const exe = process.argv[2];
 if (!exe) { console.error('usage: node scripts/smoke.mjs <executable>'); process.exit(2); }
