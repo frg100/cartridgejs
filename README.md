@@ -11,8 +11,8 @@ npm run desktop:build    # Windows, macOS and Linux builds
 npx cartridge upload --branch beta
 ```
 
-> **Status: early MVP (0.1).** The npm names (`@cartridgejs/*`, `create-cartridgejs`) are not published yet.
-> To try it now, clone this repo and use the example (see [Contributing](CONTRIBUTING.md)).
+> **Status: early MVP (0.1).** Published on npm: [`create-cartridgejs`](https://www.npmjs.com/package/create-cartridgejs),
+> [`@cartridgejs/cli`](https://www.npmjs.com/package/@cartridgejs/cli), [`@cartridgejs/steam`](https://www.npmjs.com/package/@cartridgejs/steam).
 
 ## Why
 
