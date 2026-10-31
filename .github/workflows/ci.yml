@@ -41,6 +41,4 @@ jobs:
         run: pnpm exec cartridge build --platform ${{ runner.os == 'Windows' && 'windows' || runner.os == 'macOS' && 'macos' || 'linux' }}
       - name: Smoke test (Linux)
         if: runner.os == 'Linux'
-        run: |
-          npm i --no-save playwright@1
-          xvfb-run -a node scripts/smoke.mjs examples/cube/.cartridge/build/linux/cube-clicker
+        run: xvfb-run -a node scripts/smoke.mjs examples/cube/.cartridge/build/linux/cube-clicker
