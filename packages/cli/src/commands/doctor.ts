@@ -76,6 +76,7 @@ export async function doctor(): Promise<number> {
   if (config.devtools) add('warn', 'devtools is on for release builds', 'Players can open DevTools with F12.');
   if (config.platforms.includes('macos')) {
     add('warn', 'macOS builds are not signed or notarized by cartridge yet', 'Steam starts unsigned apps, but sign them if you can.');
+    add('warn', 'No in-game Steam overlay on macOS (Electron limit)', 'Achievements, stats and cloud saves work. Overlay calls open in the Steam window. See docs/steam-api.md#overlay.');
   }
 
   return report(checks);

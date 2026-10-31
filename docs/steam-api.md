@@ -47,6 +47,16 @@ Turn on Steam Cloud in Steamworks and set a byte and file quota.
 - `presence.set(key, value?)` — Steam rich presence. Clear a key with no value.
 
 ### Overlay
+
+Where the in-game overlay (Shift+Tab, and the calls below) appears:
+
+| Platform | Started by Steam | `cartridge dev` / started from a terminal |
+|---|---|---|
+| Windows, Linux | Expected to work (not yet tested by the project) | Usually not: Steam loads the overlay only into games that it starts |
+| macOS | **No.** Steam does not draw over Electron windows ([electron#42656](https://github.com/electron/electron/issues/42656)). Calls open the page in Steam's own window | No |
+
+To test the overlay, start the game from your Steam library, not from a terminal.
+
 - `overlay.openUrl(url)` — in a normal browser, opens a new tab.
 - `overlay.openDialog('friends' | 'community' | 'players' | 'settings' | 'officialgamegroup' | 'stats' | 'achievements')`
 - `overlay.openStore(appId?)` — defaults to your game.
