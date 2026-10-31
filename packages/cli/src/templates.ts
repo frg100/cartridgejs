@@ -1,7 +1,7 @@
 import type { PackageManager } from './config.js';
 
 export function configTemplate(opts: { name: string; id: string; webDir: string; devUrl: string }): string {
-  return `// cartridge config. Docs: https://github.com/cartridgejs/cartridgejs/blob/main/docs/config.md
+  return `// cartridge config. Docs: https://github.com/frg100/cartridgejs/blob/main/docs/config.md
 import { defineConfig } from '@cartridgejs/cli';
 
 export default defineConfig({

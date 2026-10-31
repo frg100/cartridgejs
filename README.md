@@ -69,6 +69,7 @@ See [docs/architecture.md](docs/architecture.md).
 - [Game-side Steam API](docs/steam-api.md)
 - [Release checklist: from zero to a Steam build](docs/shipping.md)
 - [Architecture](docs/architecture.md)
+- [Releasing](RELEASING.md)
 
 ## Known limits (0.1)
 
