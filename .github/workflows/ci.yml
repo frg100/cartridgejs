@@ -42,3 +42,6 @@ jobs:
       - name: Smoke test (Linux)
         if: runner.os == 'Linux'
         run: xvfb-run -a node scripts/smoke.mjs examples/cube/.cartridge/build/linux/cube-clicker
+      - name: Dev app name (macOS)
+        if: runner.os == 'macOS'
+        run: scripts/check-mac-dev-app.sh
