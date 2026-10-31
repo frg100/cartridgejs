@@ -4,15 +4,24 @@
   "description": "cartridge: build, run and upload three.js / WebGL games to Steam.",
   "license": "MIT",
   "type": "module",
-  "bin": { "cartridge": "./dist/bin.js" },
+  "bin": {
+    "cartridge": "./bin/cartridge.mjs"
+  },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
-    ".": { "types": "./dist/index.d.ts", "default": "./dist/index.js" }
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
   },
-  "files": ["dist", "templates"],
+  "files": [
+    "bin",
+    "dist",
+    "templates"
+  ],
   "scripts": {
-    "build": "tsc -p tsconfig.json && chmod +x dist/bin.js",
+    "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "node --test \"test/*.test.mjs\""
   },
