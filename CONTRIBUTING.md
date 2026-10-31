@@ -1,6 +1,6 @@
 # Contributing
 
-Needs Node.js 20+ and pnpm 10.
+Needs Node.js 20.19+ or 22.12+ (see `.nvmrc`) and pnpm 10.
 
 ```bash
 pnpm install
