@@ -3,12 +3,42 @@
   "version": "0.1.0",
   "description": "Start a new three.js game that ships to Steam with cartridge: npm create cartridgejs@latest",
   "license": "MIT",
+  "author": "frg100",
+  "homepage": "https://github.com/frg100/cartridgejs#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/frg100/cartridgejs.git",
+    "directory": "packages/create-cartridgejs"
+  },
+  "bugs": {
+    "url": "https://github.com/frg100/cartridgejs/issues"
+  },
+  "keywords": [
+    "create",
+    "starter",
+    "template",
+    "threejs",
+    "steam",
+    "gamedev"
+  ],
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  },
   "type": "module",
-  "bin": { "create-cartridgejs": "./dist/index.js" },
-  "files": ["dist", "template"],
+  "bin": {
+    "create-cartridgejs": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "template",
+    "!dist/**/*.map"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.json && chmod +x dist/index.js && node scripts/copy-template.mjs",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "node --test \"test/*.test.mjs\""
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

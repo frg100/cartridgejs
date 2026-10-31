@@ -3,18 +3,52 @@
   "version": "0.1.0",
   "description": "Game-side Steam API for cartridge games. Works in the cartridge desktop shell and falls back to local storage in a normal browser.",
   "license": "MIT",
+  "author": "frg100",
+  "homepage": "https://github.com/frg100/cartridgejs#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/frg100/cartridgejs.git",
+    "directory": "packages/steam"
+  },
+  "bugs": {
+    "url": "https://github.com/frg100/cartridgejs/issues"
+  },
+  "keywords": [
+    "steam",
+    "steamworks",
+    "achievements",
+    "cloud-saves",
+    "threejs",
+    "webgl",
+    "gamedev"
+  ],
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  },
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
-    ".": { "types": "./dist/index.d.ts", "default": "./dist/index.js" },
-    "./protocol": { "types": "./dist/protocol.d.ts", "default": "./dist/protocol.js" }
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./protocol": {
+      "types": "./dist/protocol.d.ts",
+      "default": "./dist/protocol.js"
+    }
   },
-  "files": ["dist"],
+  "files": [
+    "dist",
+    "!dist/**/*.map"
+  ],
   "sideEffects": false,
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "node --test \"test/*.test.mjs\""
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

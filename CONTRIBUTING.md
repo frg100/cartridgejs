@@ -26,3 +26,11 @@ If the Steam client runs on your computer, the example connects to Spacewar (App
   fallback (`packages/steam/src/index.ts`) and every shell.
 - Keep error messages short, with a hint that tells the user what to do (`new CartridgeError(message, hint)`).
 - Add a test for config, SteamPipe and fallback changes.
+
+## Before a release
+
+```bash
+pnpm build && node scripts/check-pack.mjs --e2e
+```
+
+See [RELEASING.md](RELEASING.md).
