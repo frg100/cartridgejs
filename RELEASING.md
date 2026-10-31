@@ -5,10 +5,37 @@ together with the same version. `create-cartridgejs` gives new games `^<its own 
 
 ## One time
 
-1. Own the npm scope: `npm org create cartridgejs` (free for public packages).
-2. Make an npm access token that can publish `@cartridgejs/*` and `create-cartridgejs`
-   (npmjs.com › Access Tokens › Generate New Token › Granular, read and write).
-3. Add it to GitHub: repo › Settings › Secrets and variables › Actions › New secret › `NPM_TOKEN`.
+The release workflow uses **npm trusted publishing (OIDC)**: GitHub Actions proves to npm which repo and workflow
+it is, so no npm token is stored in GitHub. (npm is removing direct publishing for 2FA-bypass tokens around
+January 2027, see the [GitHub changelog](https://github.blog/changelog/2026-07-08-npm-install-time-security-and-gat-bypass2fa-deprecation/).)
+
+1. **Own the npm scope.** Make the org `cartridgejs` at https://www.npmjs.com/org/create (the free plan allows
+   unlimited public packages). The npm CLI cannot create orgs. Check it with `npm org ls cartridgejs`.
+
+2. **Publish 0.1.0 by hand, one time.** A trusted publisher is set in each package's settings on npmjs.com,
+   so the packages must exist first. From a clean `main`:
+
+   ```bash
+   pnpm install --frozen-lockfile && pnpm build && node scripts/check-pack.mjs --e2e
+   node scripts/pack-release.mjs
+   for f in .release/*.tgz; do npm publish "$f" --access public; done
+   ```
+
+   npm asks for your 2FA code for each package.
+
+3. **Connect each package to the workflow.** For each of `@cartridgejs/cli`, `@cartridgejs/steam`,
+   `@cartridgejs/electron` and `create-cartridgejs`: npmjs.com › the package › Settings › Trusted Publisher ›
+   GitHub Actions, with:
+
+   | Field | Value |
+   |---|---|
+   | Organization or user | `frg100` |
+   | Repository | `cartridgejs` |
+   | Workflow filename | `release.yml` |
+   | Environment | (empty) |
+
+4. **Optional, recommended:** on the same Settings page, set "Publishing access" to require 2FA and disallow
+   tokens. Then only this workflow (and you, with 2FA) can publish.
 
 ## Each release
 
@@ -21,8 +48,9 @@ git tag v0.2.0 && git push origin main v0.2.0
 ```
 
 The tag starts `.github/workflows/release.yml`. It builds, tests, checks that the tag matches the package versions,
-builds a new game from the packed packages, and publishes. When the repository is public, it adds npm provenance
-(a signed link from each package to the commit and workflow that built it).
+builds a new game from the packed packages, and publishes with trusted publishing. It skips versions that are
+already on npm, so you can run a failed release again. npm adds provenance (a signed link from each package to the
+commit and workflow that built it) when the repository is public.
 
 - A version with a `-` (for example `0.2.0-beta.1`) is published with the npm tag `next`, not `latest`.
 - To try the workflow without publishing: Actions › Release › Run workflow (with "dry run" on).

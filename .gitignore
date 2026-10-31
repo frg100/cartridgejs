@@ -5,3 +5,4 @@ dist/
 .DS_Store
 packages/create-cartridgejs/template/
 smoke.png
+.release/
