@@ -139,7 +139,13 @@ export const electronShell: ShellAdapter = {
     // Chromium refuses to start as root with its sandbox on (containers, some CI).
     if (process.platform === 'linux' && process.getuid?.() === 0) args.push('--no-sandbox');
     return new Promise((resolve, reject) => {
-      const child = spawn(runtime.electronBinary(), args, { stdio: 'inherit', env, cwd: config.root });
+      const binary = runtime.devBinary({
+        name: config.name,
+        id: config.id,
+        icon: config.icon ? config.icon.replace(/\.(ico|icns|png)$/i, '') + '.icns' : undefined,
+        cacheDir: path.join(config.outDir, 'dev', 'mac-app'),
+      });
+      const child = spawn(binary, args, { stdio: 'inherit', env, cwd: config.root });
       child.on('error', reject);
       child.on('exit', (code) => resolve(code ?? 0));
       const stop = () => child.kill('SIGTERM');
