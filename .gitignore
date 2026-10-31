@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.kiln/
+*.log
+.DS_Store
+packages/create-kiln-game/template/
+smoke.png

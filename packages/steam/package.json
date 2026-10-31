@@ -1,0 +1,20 @@
+{
+  "name": "@kiln/steam",
+  "version": "0.1.0",
+  "description": "Game-side Steam API for kiln games. Works in the kiln desktop shell and falls back to local storage in a normal browser.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": { "types": "./dist/index.d.ts", "default": "./dist/index.js" },
+    "./protocol": { "types": "./dist/protocol.d.ts", "default": "./dist/protocol.js" }
+  },
+  "files": ["dist"],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "node --test \"test/*.test.mjs\""
+  }
+}

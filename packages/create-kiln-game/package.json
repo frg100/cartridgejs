@@ -1,0 +1,14 @@
+{
+  "name": "create-kiln-game",
+  "version": "0.1.0",
+  "description": "Start a new three.js game that ships to Steam with kiln: npm create kiln-game@latest",
+  "license": "MIT",
+  "type": "module",
+  "bin": { "create-kiln-game": "./dist/index.js" },
+  "files": ["dist", "template"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json && chmod +x dist/index.js && node scripts/copy-template.mjs",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "node --test \"test/*.test.mjs\""
+  }
+}
