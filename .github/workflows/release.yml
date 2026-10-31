@@ -1,0 +1,70 @@
+# Publish all packages to npm when you push a version tag (v0.1.0, v0.2.0-beta.1, ...).
+#
+# Uses npm trusted publishing (OIDC): no npm token is stored in GitHub. Each package on
+# npmjs.com must list this workflow as its trusted publisher. See RELEASING.md.
+# (npm is removing direct publishing for 2FA-bypass tokens around January 2027:
+#  https://github.blog/changelog/2026-07-08-npm-install-time-security-and-gat-bypass2fa-deprecation/)
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: Pack and check only; do not publish
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+  id-token: write # trusted publishing (OIDC) and provenance
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      # Trusted publishing needs npm 11.5.1 or newer; Node 22 ships an older npm.
+      - run: npm install -g npm@12
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - run: pnpm typecheck
+      - run: pnpm test
+
+      - name: Tag must match package versions
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          TAG="${GITHUB_REF_NAME#v}"
+          for f in packages/*/package.json; do
+            V=$(node -p "require('./$f').version")
+            [ "$V" = "$TAG" ] || { echo "::error::$f is $V, tag is $TAG"; exit 1; }
+          done
+
+      - name: Check the packed packages (and build a new game from them)
+        run: node scripts/check-pack.mjs --e2e
+
+      - name: Pack
+        run: node scripts/pack-release.mjs
+
+      - name: Publish
+        run: |
+          ARGS="--access public"
+          case "$GITHUB_REF_NAME" in *-*) ARGS="$ARGS --tag next";; esac
+          if [ "${{ inputs.dry_run }}" = "true" ]; then ARGS="$ARGS --dry-run"; fi
+          for TGZ in .release/*.tgz; do
+            NAME=$(tar -xzOf "$TGZ" package/package.json | node -p "JSON.parse(require('fs').readFileSync(0)).name")
+            VERSION=$(tar -xzOf "$TGZ" package/package.json | node -p "JSON.parse(require('fs').readFileSync(0)).version")
+            # Re-running a release skips versions that are already on npm.
+            if npm view "$NAME@$VERSION" version >/dev/null 2>&1; then
+              echo "$NAME@$VERSION is already on npm; skip"
+              continue
+            fi
+            echo "Publish $NAME@$VERSION $ARGS"
+            npm publish "$TGZ" $ARGS
+          done

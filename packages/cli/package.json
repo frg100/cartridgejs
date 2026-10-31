@@ -1,0 +1,58 @@
+{
+  "name": "@cartridgejs/cli",
+  "version": "0.1.0",
+  "description": "cartridge: build, run and upload three.js / WebGL games to Steam.",
+  "license": "MIT",
+  "author": "frg100",
+  "homepage": "https://github.com/frg100/cartridgejs#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/frg100/cartridgejs.git",
+    "directory": "packages/cli"
+  },
+  "bugs": {
+    "url": "https://github.com/frg100/cartridgejs/issues"
+  },
+  "keywords": [
+    "steam",
+    "steamworks",
+    "threejs",
+    "webgl",
+    "electron",
+    "gamedev",
+    "cli",
+    "steampipe"
+  ],
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  },
+  "type": "module",
+  "bin": {
+    "cartridge": "./bin/cartridge.mjs"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "bin",
+    "dist",
+    "!dist/**/*.map"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "node --test \"test/*.test.mjs\""
+  },
+  "dependencies": {
+    "@electron/packager": "20.3.0",
+    "@cartridgejs/electron": "workspace:*"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

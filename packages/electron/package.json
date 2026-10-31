@@ -1,0 +1,45 @@
+{
+  "name": "@cartridgejs/electron",
+  "version": "0.1.0",
+  "description": "The Electron shell for cartridge games: window, game protocol, and Steamworks bridge.",
+  "license": "MIT",
+  "author": "frg100",
+  "homepage": "https://github.com/frg100/cartridgejs#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/frg100/cartridgejs.git",
+    "directory": "packages/electron"
+  },
+  "bugs": {
+    "url": "https://github.com/frg100/cartridgejs/issues"
+  },
+  "keywords": [
+    "steam",
+    "steamworks",
+    "electron",
+    "gamedev"
+  ],
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "!dist/**/*.map"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "steamworks.js": "0.4.0",
+    "electron": "45.2.1"
+  },
+  "devDependencies": {
+    "@cartridgejs/steam": "workspace:*"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

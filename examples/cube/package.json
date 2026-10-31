@@ -1,0 +1,24 @@
+{
+  "name": "cartridge-example-cube",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "desktop:dev": "cartridge dev",
+    "desktop:preview": "cartridge preview --build",
+    "desktop:build": "cartridge build",
+    "steam:upload": "cartridge upload"
+  },
+  "dependencies": {
+    "@cartridgejs/steam": "workspace:*",
+    "three": "^0.187.0"
+  },
+  "devDependencies": {
+    "@cartridgejs/cli": "workspace:*",
+    "@types/three": "^0.187.0",
+    "typescript": "^5.9.0",
+    "vite": "^8.3.5"
+  }
+}

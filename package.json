@@ -1,0 +1,24 @@
+{
+  "name": "cartridgejs-monorepo",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Ship three.js and other WebGL games to Steam with one CLI.",
+  "license": "MIT",
+  "packageManager": "pnpm@10.28.0",
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  },
+  "scripts": {
+    "preinstall": "node scripts/check-node.cjs",
+    "build": "pnpm -r --filter \"./packages/*\" run build",
+    "typecheck": "pnpm -r --filter \"./packages/*\" run typecheck",
+    "test": "pnpm -r --filter \"./packages/*\" run test",
+    "example:dev": "pnpm --filter cartridge-example-cube run desktop:dev",
+    "example:build": "pnpm --filter cartridge-example-cube run desktop:build"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "playwright": "1.64.1",
+    "typescript": "^5.9.0"
+  }
+}
