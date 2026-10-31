@@ -4,14 +4,14 @@
 one config file, one CLI, and one small game-side API for achievements, cloud saves and the overlay.
 
 ```bash
-npm create cartridgejs@latest my-game
+npm create @cartridgejs@latest my-game
 cd my-game && npm install
 npm run desktop:dev      # your game in a desktop window, with Steam
 npm run desktop:build    # Windows, macOS and Linux builds
 npx cartridge upload --branch beta
 ```
 
-> **Status: early MVP (0.1).** Published on npm: [`create-cartridgejs`](https://www.npmjs.com/package/create-cartridgejs),
+> **Status: early MVP (0.1).** Published on npm: [`@cartridgejs/create`](https://www.npmjs.com/package/@cartridgejs/create),
 > [`@cartridgejs/cli`](https://www.npmjs.com/package/@cartridgejs/cli), [`@cartridgejs/steam`](https://www.npmjs.com/package/@cartridgejs/steam).
 
 ## Why

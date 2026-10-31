@@ -1,7 +1,7 @@
 # Releasing
 
-All packages (`@cartridgejs/cli`, `@cartridgejs/steam`, `@cartridgejs/electron`, `create-cartridgejs`) are released
-together with the same version. `create-cartridgejs` gives new games `^<its own version>` of the other packages.
+All packages (`@cartridgejs/cli`, `@cartridgejs/steam`, `@cartridgejs/electron`, `@cartridgejs/create`) are released
+together with the same version. `@cartridgejs/create` gives new games `^<its own version>` of the other packages.
 
 ## One time
 
@@ -23,11 +23,11 @@ January 2027, see the [GitHub changelog](https://github.blog/changelog/2026-07-0
 
    npm asks for your 2FA code for each package. With npm 12, this makes a **staged** publish: npm shows a
    `0.0.0-stage` placeholder, and the real version is not public until you approve it on npmjs.com (the package
-   page, with 2FA). Approve all four. `create-cartridgejs` makes games that need `@cartridgejs/cli`, so a new game
+   page, with 2FA). Approve all four. `@cartridgejs/create` makes games that need `@cartridgejs/cli`, so a new game
    cannot install until every package is approved. Check with `npm view @cartridgejs/cli version`.
 
 3. **Connect each package to the workflow.** For each of `@cartridgejs/cli`, `@cartridgejs/steam`,
-   `@cartridgejs/electron` and `create-cartridgejs`: npmjs.com › the package › Settings › Trusted Publisher ›
+   `@cartridgejs/electron` and `@cartridgejs/create`: npmjs.com › the package › Settings › Trusted Publisher ›
    GitHub Actions, with:
 
    | Field | Value |
@@ -68,3 +68,8 @@ commit and workflow that built it) when the repository is public.
 `node scripts/check-pack.mjs --e2e` packs every package as npm would publish it, checks the files in each tarball,
 then makes a new game with the packed starter and builds it with only the packed packages. CI runs it on Windows,
 macOS and Linux for every pull request (`release-check` job).
+
+## Old package name
+
+The starter was first published as `create-cartridgejs` (0.1.0). It is deprecated, and its name is kept
+(not unpublished) so that no one else can publish a package with that name. Use `@cartridgejs/create`.

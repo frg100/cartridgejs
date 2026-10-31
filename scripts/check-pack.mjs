@@ -1,6 +1,6 @@
 // Release check: pack every package as `pnpm publish` would, check what is inside,
 // and (with --e2e) make a new game from the packed starter and build it with ONLY
-// the packed packages, as a user would after `npm create cartridgejs`.
+// the packed packages, as a user would after `npm create @cartridgejs`.
 //
 // Usage: node scripts/check-pack.mjs [--e2e]      (run `pnpm build` first)
 import { execFileSync } from 'node:child_process';
@@ -20,7 +20,7 @@ const PACKAGES = {
   steam: { must: ['package.json', 'README.md', 'LICENSE', 'dist/index.js', 'dist/index.d.ts', 'dist/protocol.js'] },
   electron: { must: ['package.json', 'README.md', 'LICENSE', 'dist/index.js', 'dist/main.js', 'dist/preload.js', 'dist/steam.js', 'dist/config.js'] },
   cli: { must: ['package.json', 'README.md', 'LICENSE', 'bin/cartridge.mjs', 'dist/bin.js', 'dist/index.js', 'dist/index.d.ts'] },
-  'create-cartridgejs': { must: ['package.json', 'README.md', 'LICENSE', 'dist/index.js', 'template/package.json', 'template/cartridge.config.mjs', 'template/_gitignore', 'template/src/main.ts', 'template/assets/icon.icns'] },
+  create: { must: ['package.json', 'README.md', 'LICENSE', 'dist/index.js', 'template/package.json', 'template/cartridge.config.mjs', 'template/_gitignore', 'template/src/main.ts', 'template/assets/icon.icns'] },
 };
 const FORBIDDEN = [/^src\//, /^test\//, /\.map$/, /^tsconfig\.json$/, /node_modules\//];
 
@@ -68,9 +68,9 @@ if (e2e) {
   fs.mkdirSync(work);
   const starter = path.join(out, 'starter');
   fs.mkdirSync(starter);
-  run('tar', ['-xzf', tarballs['create-cartridgejs'], '-C', starter]);
+  run('tar', ['-xzf', tarballs['create'], '-C', starter]);
 
-  console.log('\n› create-cartridgejs my-game (from the packed starter)');
+  console.log('\n› npm create @cartridgejs my-game (from the packed starter)');
   run('node', [path.join(starter, 'package', 'dist', 'index.js'), 'my-game'], work);
   const game = path.join(work, 'my-game');
 

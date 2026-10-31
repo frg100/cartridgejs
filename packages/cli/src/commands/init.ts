@@ -32,7 +32,7 @@ export async function init(flags: InitFlags): Promise<void> {
   const root = process.cwd();
   const pkg = readPackageJson(root);
   if (!pkg) {
-    throw new CartridgeError('No package.json here.', 'Run `cartridge init` in your game folder, or start a new game with `npm create cartridge-game`.');
+    throw new CartridgeError('No package.json here.', 'Run `cartridge init` in your game folder, or start a new game with `npm create @cartridgejs@latest`.');
   }
 
   const existing = findConfigFile(root);

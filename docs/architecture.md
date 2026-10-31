@@ -5,7 +5,7 @@ packages/
   steam/             @cartridgejs/steam       game-side API + the shell protocol (types)
   electron/          @cartridgejs/electron    Electron main + preload, steamworks.js bridge
   cli/               @cartridgejs/cli         config, commands, shell adapters, SteamPipe
-  create-cartridgejs/                    starter (copies examples/cube)
+  create/            @cartridgejs/create      starter (copies examples/cube)
 examples/cube/                         three.js example, also the starter template
 scripts/smoke.mjs                      starts a packaged build and checks it with Playwright
 ```

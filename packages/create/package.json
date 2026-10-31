@@ -1,14 +1,14 @@
 {
-  "name": "create-cartridgejs",
+  "name": "@cartridgejs/create",
   "version": "0.1.0",
-  "description": "Start a new three.js game that ships to Steam with cartridge: npm create cartridgejs@latest",
+  "description": "Start a new three.js game that ships to Steam with cartridge.js: npm create @cartridgejs@latest",
   "license": "MIT",
   "author": "frg100",
   "homepage": "https://github.com/frg100/cartridgejs#readme",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/frg100/cartridgejs.git",
-    "directory": "packages/create-cartridgejs"
+    "directory": "packages/create"
   },
   "bugs": {
     "url": "https://github.com/frg100/cartridgejs/issues"
@@ -26,7 +26,7 @@
   },
   "type": "module",
   "bin": {
-    "create-cartridgejs": "./dist/index.js"
+    "cartridge-create": "./dist/index.js"
   },
   "files": [
     "dist",

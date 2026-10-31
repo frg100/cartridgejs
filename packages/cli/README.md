@@ -11,7 +11,7 @@ npx cartridge upload      # SteamPipe + steamcmd
 npx cartridge doctor      # check the project before a release
 ```
 
-To start a new game, use `npm create cartridgejs@latest my-game`.
+To start a new game, use `npm create @cartridgejs@latest my-game`.
 
 Config: `cartridge.config.mjs`
 

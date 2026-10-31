@@ -4,7 +4,7 @@ Needs Node.js 20.19+ or 22.12+ (see `.nvmrc`) and pnpm 10.
 
 ```bash
 pnpm install
-pnpm build        # builds all packages (and the create-cartridgejs template)
+pnpm build        # builds all packages (and the @cartridgejs/create template)
 pnpm test
 pnpm typecheck
 ```

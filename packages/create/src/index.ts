@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
- * npm create cartridgejs@latest my-game
- * pnpm create cartridge-game my-game
+ * npm create @cartridgejs@latest my-game
+ * pnpm create @cartridgejs my-game
  */
 import * as fs from 'node:fs';
 import { createRequire } from 'node:module';
@@ -71,7 +71,7 @@ export function create(targetArg: string, cwd = process.cwd(), version = VERSION
 function main(): void {
   const args = process.argv.slice(2).filter((a) => !a.startsWith('-'));
   if (process.argv.includes('--help') || process.argv.includes('-h')) {
-    console.log('Usage: npm create cartridgejs@latest <folder>');
+    console.log('Usage: npm create @cartridgejs@latest <folder>');
     return;
   }
   const target = args[0] ?? 'my-cartridge-game';

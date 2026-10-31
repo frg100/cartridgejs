@@ -3,6 +3,6 @@ dist/
 .cartridge/
 *.log
 .DS_Store
-packages/create-cartridgejs/template/
+packages/create/template/
 smoke.png
 .release/

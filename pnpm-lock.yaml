@@ -49,7 +49,7 @@ importers:
         specifier: 20.3.0
         version: 20.3.0
 
-  packages/create-cartridgejs: {}
+  packages/create: {}
 
   packages/electron:
     dependencies:
