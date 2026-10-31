@@ -40,7 +40,7 @@ for (const [dir, spec] of Object.entries(PACKAGES)) {
   const tgz = path.join(out, file);
   tarballs[dir] = tgz;
 
-  const files = capture('tar', ['-tzf', tgz]).split('\n').filter(Boolean).map((f) => f.replace(/^package\//, ''));
+  const files = capture('tar', ['-tzf', tgz]).split(/\r?\n/).map((f) => f.trim()).filter(Boolean).map((f) => f.replace(/^package\//, ''));
   for (const m of spec.must) if (!files.includes(m)) problems.push(`${dir}: missing ${m}`);
   for (const f of files) if (FORBIDDEN.some((re) => re.test(f))) problems.push(`${dir}: must not publish ${f}`);
 
