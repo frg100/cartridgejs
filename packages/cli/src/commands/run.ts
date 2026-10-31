@@ -2,7 +2,7 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { loadConfig } from '../config.js';
 import { isUp, killTree, runShell, startShell, waitForUrl } from '../exec.js';
-import { c, KilnError, log } from '../log.js';
+import { c, CartridgeError, log } from '../log.js';
 import { getShell } from '../shells/index.js';
 
 export interface DevFlags {
@@ -10,7 +10,7 @@ export interface DevFlags {
   url?: string;
 }
 
-/** `kiln dev`: start the web dev server and open it in the desktop shell. */
+/** `cartridge dev`: start the web dev server and open it in the desktop shell. */
 export async function dev(flags: DevFlags): Promise<number> {
   const config = await loadConfig();
   const shell = getShell(config);
@@ -33,9 +33,9 @@ export async function dev(flags: DevFlags): Promise<number> {
     }
     log.ok(`Dev server ready at ${c.bold(url)}`);
   } else {
-    throw new KilnError(
+    throw new CartridgeError(
       `Nothing answers at ${url}, and there is no dev command.`,
-      'Add a "dev" script to package.json, or set `web.dev` in the kiln config.',
+      'Add a "dev" script to package.json, or set `web.dev` in the cartridge config.',
     );
   }
 
@@ -56,7 +56,7 @@ export interface PreviewFlags {
   build: boolean;
 }
 
-/** `kiln preview`: run the production web build in the desktop shell (no packaging). */
+/** `cartridge preview`: run the production web build in the desktop shell (no packaging). */
 export async function preview(flags: PreviewFlags): Promise<number> {
   const config = await loadConfig();
   const shell = getShell(config);
@@ -65,7 +65,7 @@ export async function preview(flags: PreviewFlags): Promise<number> {
     await runShell(config.web.build, config.root);
   }
   if (!fs.existsSync(path.join(config.web.dir, 'index.html'))) {
-    throw new KilnError(`No index.html in ${path.relative(config.root, config.web.dir) || '.'}.`, 'Build the web game first, or check `web.dir`.');
+    throw new CartridgeError(`No index.html in ${path.relative(config.root, config.web.dir) || '.'}.`, 'Build the web game first, or check `web.dir`.');
   }
   log.step(`Preview ${c.bold(config.name)} from ${path.relative(config.root, config.web.dir)}/`);
   return shell.dev(config, { entry: { kind: 'dir', dir: config.web.dir }, noSteam: flags.noSteam });

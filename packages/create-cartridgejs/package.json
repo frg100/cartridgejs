@@ -1,10 +1,10 @@
 {
-  "name": "create-kiln-game",
+  "name": "create-cartridgejs",
   "version": "0.1.0",
-  "description": "Start a new three.js game that ships to Steam with kiln: npm create kiln-game@latest",
+  "description": "Start a new three.js game that ships to Steam with cartridge: npm create cartridgejs@latest",
   "license": "MIT",
   "type": "module",
-  "bin": { "create-kiln-game": "./dist/index.js" },
+  "bin": { "create-cartridgejs": "./dist/index.js" },
   "files": ["dist", "template"],
   "scripts": {
     "build": "tsc -p tsconfig.json && chmod +x dist/index.js && node scripts/copy-template.mjs",

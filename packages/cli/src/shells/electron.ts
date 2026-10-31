@@ -4,14 +4,14 @@ import { createRequire } from 'node:module';
 import * as path from 'node:path';
 import type { Platform, ResolvedConfig } from '../config.js';
 import { copyDir, rmrf } from '../exec.js';
-import { c, KilnError, log } from '../log.js';
+import { c, CartridgeError, log } from '../log.js';
 import type { BuildResult, DevOptions, ShellAdapter } from './types.js';
 
 const require = createRequire(import.meta.url);
-// @kiln/electron is CommonJS; load it with require.
-const runtime = require('@kiln/electron') as typeof import('@kiln/electron');
+// @cartridgejs/electron is CommonJS; load it with require.
+const runtime = require('@cartridgejs/electron') as typeof import('@cartridgejs/electron');
 
-type RuntimeConfig = import('@kiln/electron').RuntimeConfig;
+type RuntimeConfig = import('@cartridgejs/electron').RuntimeConfig;
 
 /** Which steamworks.js native folder each platform needs. */
 const STEAMWORKS_DIST: Record<Platform, string> = { windows: 'win64', macos: 'osx', linux: 'linux64' };
@@ -50,7 +50,7 @@ function macArch(config: ResolvedConfig): 'universal' | 'x64' | 'arm64' {
 /** Make the app folder that Electron Packager turns into a game. */
 function stage(config: ResolvedConfig, platform: Platform, stageDir: string): void {
   rmrf(stageDir);
-  fs.mkdirSync(path.join(stageDir, 'kiln'), { recursive: true });
+  fs.mkdirSync(path.join(stageDir, 'cartridge'), { recursive: true });
 
   fs.writeFileSync(
     path.join(stageDir, 'package.json'),
@@ -61,7 +61,7 @@ function stage(config: ResolvedConfig, platform: Platform, stageDir: string): vo
         version: config.version,
         author: config.publisher,
         private: true,
-        main: 'kiln/main.js',
+        main: 'cartridge/main.js',
       },
       null,
       2,
@@ -69,10 +69,10 @@ function stage(config: ResolvedConfig, platform: Platform, stageDir: string): vo
   );
 
   for (const f of runtime.runtimeFiles) {
-    fs.copyFileSync(path.join(runtime.runtimeDir, f), path.join(stageDir, 'kiln', f));
+    fs.copyFileSync(path.join(runtime.runtimeDir, f), path.join(stageDir, 'cartridge', f));
   }
   fs.writeFileSync(
-    path.join(stageDir, 'kiln', 'runtime.json'),
+    path.join(stageDir, 'cartridge', 'runtime.json'),
     JSON.stringify(runtimeConfig(config, { kind: 'dir', dir: 'game' }, false), null, 2),
   );
 
@@ -131,11 +131,11 @@ export const electronShell: ShellAdapter = {
       opts.entry.kind === 'dir' ? { kind: 'dir', dir: path.relative(devDir, opts.entry.dir) } : opts.entry;
     fs.writeFileSync(file, JSON.stringify(runtimeConfig(config, entry, true), null, 2));
 
-    const env: NodeJS.ProcessEnv = { ...process.env, KILN_RUNTIME_CONFIG: file };
-    if (opts.noSteam) env.KILN_NO_STEAM = '1';
+    const env: NodeJS.ProcessEnv = { ...process.env, CARTRIDGE_RUNTIME_CONFIG: file };
+    if (opts.noSteam) env.CARTRIDGE_NO_STEAM = '1';
     delete env.ELECTRON_RUN_AS_NODE;
 
-    const args = [runtime.mainFile, ...(process.env.KILN_ELECTRON_ARGS?.split(' ').filter(Boolean) ?? [])];
+    const args = [runtime.mainFile, ...(process.env.CARTRIDGE_ELECTRON_ARGS?.split(' ').filter(Boolean) ?? [])];
     // Chromium refuses to start as root with its sandbox on (containers, some CI).
     if (process.platform === 'linux' && process.getuid?.() === 0) args.push('--no-sandbox');
     return new Promise((resolve, reject) => {
@@ -191,7 +191,7 @@ export const electronShell: ShellAdapter = {
       },
     });
 
-    if (!paths.length) throw new KilnError(`Electron Packager made no output for ${platform}.`);
+    if (!paths.length) throw new CartridgeError(`Electron Packager made no output for ${platform}.`);
     rmrf(finalDir);
     fs.mkdirSync(path.dirname(finalDir), { recursive: true });
     fs.renameSync(paths[0]!, finalDir);

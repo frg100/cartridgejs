@@ -1,7 +1,7 @@
-# `@kiln/steam` — game-side API
+# `@cartridgejs/steam` — game-side API
 
 ```ts
-import { steam } from '@kiln/steam';
+import { steam } from '@cartridgejs/steam';
 ```
 
 All methods return promises. You can call any method before `ready()`; it waits for the shell.
@@ -20,7 +20,7 @@ So your game needs no `if (steam)` checks. Use `steam.ready()` only when you wan
 
 ### Status
 - `ready(): Promise<SteamStatus>` — `{ available, shell, appId?, reason?, isSteamDeck?, betaName?, language? }`
-- `isDesktop: boolean` — true inside a kiln shell.
+- `isDesktop: boolean` — true inside a cartridge shell.
 
 ### Achievements
 Use the **API name** from Steamworks › Stats & Achievements.
@@ -58,6 +58,6 @@ Turn on Steam Cloud in Steamworks and set a byte and file quota.
 
 ## Test with Spacewar (App ID 480)
 
-Before you have an App ID, set `steam.appId: 480`, start the Steam client, and run `kiln dev`.
+Before you have an App ID, set `steam.appId: 480`, start the Steam client, and run `cartridge dev`.
 Spacewar has the achievements `ACH_WIN_ONE_GAME`, `ACH_WIN_100_GAMES`, `ACH_TRAVEL_FAR_ACCUM`, `ACH_TRAVEL_FAR_SINGLE`
 and the stat `NumGames`. The example game uses them.

@@ -17,14 +17,14 @@ importers:
 
   examples/cube:
     dependencies:
-      '@kiln/steam':
+      '@cartridgejs/steam':
         specifier: workspace:*
         version: link:../../packages/steam
       three:
         specifier: ^0.187.0
         version: 0.187.0
     devDependencies:
-      '@kiln/cli':
+      '@cartridgejs/cli':
         specifier: workspace:*
         version: link:../../packages/cli
       '@types/three':
@@ -39,14 +39,14 @@ importers:
 
   packages/cli:
     dependencies:
+      '@cartridgejs/electron':
+        specifier: workspace:*
+        version: link:../electron
       '@electron/packager':
         specifier: 20.3.0
         version: 20.3.0
-      '@kiln/electron':
-        specifier: workspace:*
-        version: link:../electron
 
-  packages/create-kiln-game: {}
+  packages/create-cartridgejs: {}
 
   packages/electron:
     dependencies:
@@ -57,7 +57,7 @@ importers:
         specifier: 0.4.0
         version: 0.4.0
     devDependencies:
-      '@kiln/steam':
+      '@cartridgejs/steam':
         specifier: workspace:*
         version: link:../steam
 

@@ -28,7 +28,7 @@ test('browser: achievements, stats and cloud use localStorage', async () => {
   assert.equal(await steam.achievements.isUnlocked('A'), false);
   await steam.achievements.unlock('A');
   assert.equal(await steam.achievements.isUnlocked('A'), true);
-  assert.equal(localStorage.getItem('kiln:achievements'), '["A"]');
+  assert.equal(localStorage.getItem('cartridge:achievements'), '["A"]');
 
   assert.equal(await steam.stats.getInt('kills'), null);
   await steam.stats.setInt('kills', 4.7);
@@ -45,7 +45,7 @@ test('browser: achievements, stats and cloud use localStorage', async () => {
 test('desktop with Steam: calls go to the bridge', async () => {
   const calls = [];
   globalThis.window = {
-    __kiln: {
+    __cartridge: {
       invoke: async (method, ...args) => {
         calls.push([method, ...args]);
         if (method === 'steam.status') return { available: true, shell: 'electron', appId: 480 };
@@ -58,13 +58,13 @@ test('desktop with Steam: calls go to the bridge', async () => {
   assert.equal((await steam.ready()).available, true);
   assert.equal(await steam.achievements.unlock('WIN'), true);
   assert.deepEqual(calls.at(-1), ['achievement.unlock', 'WIN']);
-  assert.equal(localStorage.getItem('kiln:achievements'), null);
+  assert.equal(localStorage.getItem('cartridge:achievements'), null);
 });
 
 test('desktop without Steam: Steam calls use the fallback, app calls use the bridge', async () => {
   const calls = [];
   globalThis.window = {
-    __kiln: {
+    __cartridge: {
       invoke: async (method, ...args) => {
         calls.push(method);
         if (method === 'steam.status') return { available: false, shell: 'electron', reason: 'no steam' };

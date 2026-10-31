@@ -3,7 +3,7 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { loadConfig, type Platform } from '../config.js';
 import { which } from '../exec.js';
-import { c, KilnError, log } from '../log.js';
+import { c, CartridgeError, log } from '../log.js';
 import { planUpload, writePlan } from '../steampipe.js';
 
 export interface UploadFlags {
@@ -24,7 +24,7 @@ export function findSteamcmd(): string | undefined {
 export async function upload(flags: UploadFlags): Promise<void> {
   const config = await loadConfig();
   const description =
-    flags.description ?? `${config.name} ${config.version} (kiln, ${new Date().toISOString().slice(0, 16).replace('T', ' ')})`;
+    flags.description ?? `${config.name} ${config.version} (cartridge, ${new Date().toISOString().slice(0, 16).replace('T', ' ')})`;
 
   const plan = planUpload(config, {
     description,
@@ -57,14 +57,14 @@ export async function upload(flags: UploadFlags): Promise<void> {
 
   const steamcmd = findSteamcmd();
   if (!steamcmd) {
-    throw new KilnError(
+    throw new CartridgeError(
       'steamcmd is not installed.',
       'Install it (https://developer.valvesoftware.com/wiki/SteamCMD) or set the STEAMCMD env var to its path.',
     );
   }
   const user = flags.user ?? process.env.STEAM_USERNAME;
   if (!user) {
-    throw new KilnError(
+    throw new CartridgeError(
       'No Steam user name.',
       'Use `--user <name>` or set STEAM_USERNAME. Use a builder account that has only upload rights.',
     );
@@ -81,7 +81,7 @@ export async function upload(flags: UploadFlags): Promise<void> {
     child.on('exit', (code) => resolve(code ?? 1));
   });
   if (code !== 0) {
-    throw new KilnError(
+    throw new CartridgeError(
       `steamcmd failed (exit ${code}).`,
       `Look at the logs in ${path.relative(config.root, path.join(path.dirname(plan.appBuildFile), 'output'))}/`,
     );

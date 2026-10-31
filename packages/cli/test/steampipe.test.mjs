@@ -11,9 +11,9 @@ test('toVdf quotes, escapes and nests', () => {
 });
 
 function setup(steam, built = ['windows', 'linux']) {
-  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'kiln-up-'));
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'cartridge-up-'));
   fs.writeFileSync(path.join(root, 'package.json'), '{"version":"1.0.0"}');
-  for (const p of built) fs.mkdirSync(path.join(root, '.kiln', 'build', p), { recursive: true });
+  for (const p of built) fs.mkdirSync(path.join(root, '.cartridge', 'build', p), { recursive: true });
   return resolveConfig({ name: 'G', steam }, root, 'x');
 }
 
@@ -26,7 +26,7 @@ test('plan uses every built platform with a depot', () => {
   assert.match(app, /"SetLive"\t\t"beta"/);
   assert.match(app, /"1001"\t\t".*depot_1001\.vdf"/);
   const depot = plan.files.find((f) => f.path.endsWith('depot_1003.vdf')).content;
-  assert.match(depot, /"ContentRoot"\t\t".*\.kiln\/build\/linux"/);
+  assert.match(depot, /"ContentRoot"\t\t".*\.cartridge\/build\/linux"/);
   assert.match(depot, /"LocalPath"\t\t"\*"/);
 });
 

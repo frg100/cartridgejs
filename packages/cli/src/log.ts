@@ -20,7 +20,7 @@ export const log = {
 };
 
 /** An error with a message for the user (no stack trace). */
-export class KilnError extends Error {
+export class CartridgeError extends Error {
   constructor(message: string, public hint?: string) {
     super(message);
   }

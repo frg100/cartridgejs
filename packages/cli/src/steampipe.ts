@@ -5,7 +5,7 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import type { Platform, ResolvedConfig } from './config.js';
-import { KilnError } from './log.js';
+import { CartridgeError } from './log.js';
 
 export type VdfValue = string | number | VdfObject;
 export interface VdfObject {
@@ -55,9 +55,9 @@ export function builtPlatforms(config: ResolvedConfig): Platform[] {
 
 export function planUpload(config: ResolvedConfig, opts: PlanOptions): UploadPlan {
   const appId = config.steam.appId;
-  if (!appId) throw new KilnError('`steam.appId` is not set in the kiln config.');
+  if (!appId) throw new CartridgeError('`steam.appId` is not set in the cartridge config.');
   if (appId === 480) {
-    throw new KilnError(
+    throw new CartridgeError(
       'App 480 (Spacewar) is only for local tests. You cannot upload to it.',
       'Set `steam.appId` to your own App ID from https://partner.steamgames.com.',
     );
@@ -68,19 +68,19 @@ export function planUpload(config: ResolvedConfig, opts: PlanOptions): UploadPla
   const depots: UploadPlan['depots'] = [];
   for (const platform of wanted) {
     if (!built.includes(platform)) {
-      throw new KilnError(`No ${platform} build found.`, `Run \`kiln build --platform ${platform}\` first.`);
+      throw new CartridgeError(`No ${platform} build found.`, `Run \`cartridge build --platform ${platform}\` first.`);
     }
     const depotId = config.steam.depots[platform];
     if (!depotId) {
-      throw new KilnError(
+      throw new CartridgeError(
         `No depot for ${platform}.`,
-        `Add \`steam.depots.${platform}\` to the kiln config (Steamworks › SteamPipe › Depots).`,
+        `Add \`steam.depots.${platform}\` to the cartridge config (Steamworks › SteamPipe › Depots).`,
       );
     }
     depots.push({ platform, depotId, contentRoot: path.join(config.outDir, 'build', platform) });
   }
   if (!depots.length) {
-    throw new KilnError('There is nothing to upload.', 'Run `kiln build` first.');
+    throw new CartridgeError('There is nothing to upload.', 'Run `cartridge build` first.');
   }
 
   const dir = path.join(config.outDir, 'steampipe');

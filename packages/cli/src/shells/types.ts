@@ -19,11 +19,11 @@ export interface BuildResult {
 
 /**
  * A desktop shell. Electron is the first one. A Tauri adapter must implement
- * the same interface and the same `window.__kiln` protocol (see @kiln/steam/protocol).
+ * the same interface and the same `window.__cartridge` protocol (see @cartridgejs/steam/protocol).
  */
 export interface ShellAdapter {
   name: string;
-  /** Version string for `kiln doctor`. */
+  /** Version string for `cartridge doctor`. */
   version(): string;
   /** Start the game in the shell and resolve when the window closes. */
   dev(config: ResolvedConfig, opts: DevOptions): Promise<number>;

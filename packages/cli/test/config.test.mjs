@@ -10,17 +10,17 @@ import { slugify } from '../dist/config.js';
 delete process.env.npm_config_user_agent;
 
 function project(pkg = {}) {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'kiln-test-'));
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'cartridge-test-'));
   fs.writeFileSync(path.join(dir, 'package.json'), JSON.stringify({ version: '1.2.3', scripts: { build: 'vite build', dev: 'vite' }, ...pkg }));
   return dir;
 }
 
 test('defaults', () => {
   const root = project({ author: 'Jo Dev <jo@example.com>' });
-  const c = resolveConfig({ name: 'Space Ducks!' }, root, path.join(root, 'kiln.config.mjs'));
+  const c = resolveConfig({ name: 'Space Ducks!' }, root, path.join(root, 'cartridge.config.mjs'));
   assert.equal(c.version, '1.2.3');
   assert.equal(c.executableName, 'space-ducks');
-  assert.equal(c.id, 'com.kiln.spaceducks');
+  assert.equal(c.id, 'com.cartridge.spaceducks');
   assert.equal(c.publisher, 'Jo Dev');
   assert.equal(c.web.build, 'npm run build');
   assert.equal(c.web.dev, 'npm run dev');
@@ -28,7 +28,7 @@ test('defaults', () => {
   assert.deepEqual(c.platforms, ['windows', 'macos', 'linux']);
   assert.deepEqual(c.locales, ['en-US']);
   assert.equal(c.steam.restartThroughSteam, true);
-  assert.equal(c.outDir, path.join(root, '.kiln'));
+  assert.equal(c.outDir, path.join(root, '.cartridge'));
 });
 
 test('package manager from lockfile', () => {
@@ -48,7 +48,7 @@ test('no build script means no build command', () => {
 test('reports all problems at once', () => {
   const root = project();
   assert.throws(
-    () => resolveConfig({ name: '', id: 'bad', steam: { appId: -1, depots: { amiga: 3 } }, platforms: ['dos'] }, root, 'kiln.config.mjs'),
+    () => resolveConfig({ name: '', id: 'bad', steam: { appId: -1, depots: { amiga: 3 } }, platforms: ['dos'] }, root, 'cartridge.config.mjs'),
     (err) => {
       for (const s of ['`name`', '`id`', 'steam.appId', 'amiga', 'dos']) assert.match(err.message, new RegExp(s.replace(/[.`]/g, '\\$&')));
       return true;

@@ -2,7 +2,7 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { ALL_PLATFORMS, loadConfig, type Platform } from '../config.js';
 import { dirSize, formatBytes, rmrf, runShell } from '../exec.js';
-import { c, KilnError, log } from '../log.js';
+import { c, CartridgeError, log } from '../log.js';
 import { getShell } from '../shells/index.js';
 import type { BuildResult } from '../shells/types.js';
 
@@ -21,7 +21,7 @@ export function parsePlatforms(value: string | undefined): Platform[] | undefine
   if (value === 'all') return [...ALL_PLATFORMS];
   return value.split(',').map((v) => {
     const p = aliases[v.trim().toLowerCase()];
-    if (!p) throw new KilnError(`Unknown platform "${v}". Use windows, macos, linux or all.`);
+    if (!p) throw new CartridgeError(`Unknown platform "${v}". Use windows, macos, linux or all.`);
     return p;
   });
 }
@@ -38,9 +38,9 @@ export async function build(flags: BuildFlags): Promise<BuildResult[]> {
 
   const index = path.join(config.web.dir, 'index.html');
   if (!fs.existsSync(index)) {
-    throw new KilnError(
+    throw new CartridgeError(
       `No index.html in ${path.relative(config.root, config.web.dir) || '.'}/.`,
-      'Check `web.dir` and `web.build` in the kiln config.',
+      'Check `web.dir` and `web.build` in the cartridge config.',
     );
   }
   const html = fs.readFileSync(index, 'utf8');
@@ -67,6 +67,6 @@ export async function build(flags: BuildFlags): Promise<BuildResult[]> {
     log.info(`${r.platform.padEnd(8)} Executable: ${c.cyan(r.launchExecutable)}${argsText}`);
   }
   log.plain();
-  log.info(`Next: ${c.cyan('kiln upload')} to send the build to Steam.`);
+  log.info(`Next: ${c.cyan('cartridge upload')} to send the build to Steam.`);
   return results;
 }

@@ -1,7 +1,7 @@
 {
-  "name": "@kiln/steam",
+  "name": "@cartridgejs/steam",
   "version": "0.1.0",
-  "description": "Game-side Steam API for kiln games. Works in the kiln desktop shell and falls back to local storage in a normal browser.",
+  "description": "Game-side Steam API for cartridge games. Works in the cartridge desktop shell and falls back to local storage in a normal browser.",
   "license": "MIT",
   "type": "module",
   "main": "./dist/index.js",

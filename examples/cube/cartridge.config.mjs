@@ -1,5 +1,5 @@
-// kiln config. See docs/config.md for every option.
-import { defineConfig } from '@kiln/cli';
+// cartridge config. See docs/config.md for every option.
+import { defineConfig } from '@cartridgejs/cli';
 
 export default defineConfig({
   name: 'Cube Clicker',
@@ -20,7 +20,7 @@ export default defineConfig({
   steam: {
     // 480 is Valve's "Spacewar" test app. Change it to your App ID.
     appId: 480,
-    // Depot IDs from Steamworks › SteamPipe › Depots (needed for `kiln upload`).
+    // Depot IDs from Steamworks › SteamPipe › Depots (needed for `cartridge upload`).
     depots: {},
   },
 });

@@ -1,7 +1,7 @@
 /**
- * The runtime config that the kiln CLI writes for the shell.
- * In a packaged game it is at `<app>/kiln/runtime.json`.
- * In `kiln dev` its path comes from the KILN_RUNTIME_CONFIG env var.
+ * The runtime config that the cartridge CLI writes for the shell.
+ * In a packaged game it is at `<app>/cartridge/runtime.json`.
+ * In `cartridge dev` its path comes from the CARTRIDGE_RUNTIME_CONFIG env var.
  */
 export interface RuntimeConfig {
   name: string;

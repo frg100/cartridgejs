@@ -1,7 +1,7 @@
 {
-  "name": "@kiln/electron",
+  "name": "@cartridgejs/electron",
   "version": "0.1.0",
-  "description": "The Electron shell for kiln games: window, game protocol, and Steamworks bridge.",
+  "description": "The Electron shell for cartridge games: window, game protocol, and Steamworks bridge.",
   "license": "MIT",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -17,6 +17,6 @@
     "electron": "45.2.1"
   },
   "devDependencies": {
-    "@kiln/steam": "workspace:*"
+    "@cartridgejs/steam": "workspace:*"
   }
 }

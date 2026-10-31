@@ -1,22 +1,22 @@
 {
-  "name": "kiln-example-cube",
+  "name": "cartridge-example-cube",
   "private": true,
   "version": "0.1.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "desktop:dev": "kiln dev",
-    "desktop:preview": "kiln preview --build",
-    "desktop:build": "kiln build",
-    "steam:upload": "kiln upload"
+    "desktop:dev": "cartridge dev",
+    "desktop:preview": "cartridge preview --build",
+    "desktop:build": "cartridge build",
+    "steam:upload": "cartridge upload"
   },
   "dependencies": {
-    "@kiln/steam": "workspace:*",
+    "@cartridgejs/steam": "workspace:*",
     "three": "^0.187.0"
   },
   "devDependencies": {
-    "@kiln/cli": "workspace:*",
+    "@cartridgejs/cli": "workspace:*",
     "@types/three": "^0.187.0",
     "typescript": "^5.9.0",
     "vite": "^8.3.5"

@@ -1,7 +1,7 @@
 node_modules/
 dist/
-.kiln/
+.cartridge/
 *.log
 .DS_Store
-packages/create-kiln-game/template/
+packages/create-cartridgejs/template/
 smoke.png

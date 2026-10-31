@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { steam } from '@kiln/steam';
+import { steam } from '@cartridgejs/steam';
 
 // Achievement and stat names from Valve's "Spacewar" test app (App ID 480).
 // Change them to the API names that you make in Steamworks.
@@ -142,5 +142,5 @@ renderer.setAnimationLoop((time) => {
   renderer.render(scene, camera);
 });
 
-// For automated smoke tests (scripts/smoke.mjs in the kiln repo). You can remove it.
+// For automated smoke tests (scripts/smoke.mjs in the cartridge repo). You can remove it.
 (window as unknown as { __game: unknown }).__game = { score: () => score, onScore };

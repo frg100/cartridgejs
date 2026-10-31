@@ -1,19 +1,19 @@
 /**
- * @kiln/steam — the only Steam import your game needs.
+ * @cartridgejs/steam — the only Steam import your game needs.
  *
- *   import { steam } from '@kiln/steam';
+ *   import { steam } from '@cartridgejs/steam';
  *   const status = await steam.ready();
  *   steam.achievements.unlock('FIRST_WIN');
  *
- * Inside the kiln desktop shell, calls go to the real Steamworks API.
+ * Inside the cartridge desktop shell, calls go to the real Steamworks API.
  * In a normal browser (or when Steam is not running), calls fall back to
  * localStorage, so the same build works on the web and in local tests.
  */
 import type {
   CloudFile,
-  KilnBridge,
-  KilnMethod,
-  KilnMethods,
+  CartridgeBridge,
+  CartridgeMethod,
+  CartridgeMethods,
   OverlayDialog,
   SteamStatus,
   SteamUser,
@@ -21,10 +21,10 @@ import type {
 
 export type { CloudFile, OverlayDialog, SteamStatus, SteamUser, ShellName } from './protocol.js';
 
-const PREFIX = 'kiln:';
+const PREFIX = 'cartridge:';
 
-function bridge(): KilnBridge | undefined {
-  return typeof window !== 'undefined' ? window.__kiln : undefined;
+function bridge(): CartridgeBridge | undefined {
+  return typeof window !== 'undefined' ? window.__cartridge : undefined;
 }
 
 // ---------------------------------------------------------------------------
@@ -85,11 +85,11 @@ function readJson<T>(key: string, fallback: T): T {
   }
 }
 
-const local: { [M in KilnMethod]: (...args: Parameters<KilnMethods[M]>) => ReturnType<KilnMethods[M]> } = {
+const local: { [M in CartridgeMethod]: (...args: Parameters<CartridgeMethods[M]>) => ReturnType<CartridgeMethods[M]> } = {
   'steam.status': () => ({
     available: false,
     shell: bridge() ? 'electron' : 'browser',
-    reason: bridge() ? 'Steam did not start' : 'Not running in a kiln desktop shell',
+    reason: bridge() ? 'Steam did not start' : 'Not running in a cartridge desktop shell',
   }),
   'achievement.unlock': (id) => {
     const set = readJson<string[]>('achievements', []);
@@ -150,7 +150,7 @@ const local: { [M in KilnMethod]: (...args: Parameters<KilnMethods[M]>) => Retur
 // ---------------------------------------------------------------------------
 
 /** Methods that must use the local fallback when Steam is not available. */
-const STEAM_ONLY = new Set<KilnMethod>([
+const STEAM_ONLY = new Set<CartridgeMethod>([
   'achievement.unlock',
   'achievement.isUnlocked',
   'achievement.clear',
@@ -185,10 +185,10 @@ function ready(): Promise<SteamStatus> {
   return statusPromise;
 }
 
-async function call<M extends KilnMethod>(
+async function call<M extends CartridgeMethod>(
   method: M,
-  ...args: Parameters<KilnMethods[M]>
-): Promise<ReturnType<KilnMethods[M]>> {
+  ...args: Parameters<CartridgeMethods[M]>
+): Promise<ReturnType<CartridgeMethods[M]>> {
   const b = bridge();
   if (b) {
     const status = await ready();
@@ -196,7 +196,7 @@ async function call<M extends KilnMethod>(
       return b.invoke(method, ...args);
     }
   }
-  const fn = local[method] as (...a: Parameters<KilnMethods[M]>) => ReturnType<KilnMethods[M]>;
+  const fn = local[method] as (...a: Parameters<CartridgeMethods[M]>) => ReturnType<CartridgeMethods[M]>;
   return fn(...args);
 }
 
@@ -208,7 +208,7 @@ export const steam = {
   /** Resolves when the shell reports its Steam status. Safe to call many times. */
   ready,
 
-  /** True when the game runs inside a kiln desktop shell (with or without Steam). */
+  /** True when the game runs inside a cartridge desktop shell (with or without Steam). */
   get isDesktop(): boolean {
     return !!bridge();
   },

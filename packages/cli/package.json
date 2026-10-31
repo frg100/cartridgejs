@@ -1,10 +1,10 @@
 {
-  "name": "@kiln/cli",
+  "name": "@cartridgejs/cli",
   "version": "0.1.0",
-  "description": "kiln: build, run and upload three.js / WebGL games to Steam.",
+  "description": "cartridge: build, run and upload three.js / WebGL games to Steam.",
   "license": "MIT",
   "type": "module",
-  "bin": { "kiln": "./dist/bin.js" },
+  "bin": { "cartridge": "./dist/bin.js" },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
@@ -18,6 +18,6 @@
   },
   "dependencies": {
     "@electron/packager": "20.3.0",
-    "@kiln/electron": "workspace:*"
+    "@cartridgejs/electron": "workspace:*"
   }
 }

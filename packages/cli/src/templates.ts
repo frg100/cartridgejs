@@ -1,8 +1,8 @@
 import type { PackageManager } from './config.js';
 
 export function configTemplate(opts: { name: string; id: string; webDir: string; devUrl: string }): string {
-  return `// kiln config. Docs: https://github.com/kiln-dev/kiln/blob/main/docs/config.md
-import { defineConfig } from '@kiln/cli';
+  return `// cartridge config. Docs: https://github.com/cartridgejs/cartridgejs/blob/main/docs/config.md
+import { defineConfig } from '@cartridgejs/cli';
 
 export default defineConfig({
   name: ${JSON.stringify(opts.name)},
@@ -22,7 +22,7 @@ export default defineConfig({
   steam: {
     // 480 is Valve's "Spacewar" test app. Change it to your App ID.
     appId: 480,
-    // Depot IDs from Steamworks › SteamPipe › Depots (needed for \`kiln upload\`).
+    // Depot IDs from Steamworks › SteamPipe › Depots (needed for \`cartridge upload\`).
     depots: {
       // windows: 0,
       // macos: 0,
@@ -44,18 +44,18 @@ function installCmd(pm: PackageManager): string {
 }
 
 function execCmd(pm: PackageManager): string {
-  return { npm: 'npx kiln', pnpm: 'pnpm exec kiln', yarn: 'yarn kiln', bun: 'bunx kiln' }[pm];
+  return { npm: 'npx cartridge', pnpm: 'pnpm exec cartridge', yarn: 'yarn cartridge', bun: 'bunx cartridge' }[pm];
 }
 
 /** GitHub Actions: build on each OS, then upload with game-ci/steam-deploy. */
 export function workflowTemplate(pm: PackageManager): string {
-  const kiln = execCmd(pm);
+  const cartridge = execCmd(pm);
   return `# Build the game for Windows, macOS and Linux and upload it to Steam.
 # Repository secrets:   STEAM_USERNAME, STEAM_CONFIG_VDF
 #                        (see https://github.com/game-ci/steam-deploy#configvdf)
 # Repository variables: STEAM_APP_ID, STEAM_FIRST_DEPOT_ID
 # The three depots must have consecutive IDs in this order: windows, macos, linux.
-# (Or replace the upload job with \`kiln upload\` on a machine that has steamcmd.)
+# (Or replace the upload job with \`cartridge upload\` on a machine that has steamcmd.)
 name: Steam release
 
 on:
@@ -83,9 +83,9 @@ ${setupPm(pm)}      - uses: actions/setup-node@v4
           node-version: 22
           cache: ${pm === 'bun' ? "''" : pm}
       - run: ${installCmd(pm)}
-      - run: ${kiln} build --platform \${{ matrix.platform }}
+      - run: ${cartridge} build --platform \${{ matrix.platform }}
       # tar keeps the executable bit and the macOS .app symlinks (artifacts alone do not).
-      - run: tar -C .kiln/build -cf build-\${{ matrix.platform }}.tar \${{ matrix.platform }}
+      - run: tar -C .cartridge/build -cf build-\${{ matrix.platform }}.tar \${{ matrix.platform }}
       - uses: actions/upload-artifact@v4
         with:
           name: build-\${{ matrix.platform }}
@@ -102,8 +102,8 @@ ${setupPm(pm)}      - uses: actions/setup-node@v4
           merge-multiple: true
       - name: Unpack builds
         run: |
-          mkdir -p .kiln/build
-          for p in windows macos linux; do tar -C .kiln/build -xf "build-$p.tar"; done
+          mkdir -p .cartridge/build
+          for p in windows macos linux; do tar -C .cartridge/build -xf "build-$p.tar"; done
       - uses: game-ci/steam-deploy@v3
         with:
           username: \${{ secrets.STEAM_USERNAME }}
@@ -112,7 +112,7 @@ ${setupPm(pm)}      - uses: actions/setup-node@v4
           # steam-deploy numbers depots from this ID: depot1 = this ID, depot2 = +1, depot3 = +2.
           firstDepotIdOverride: \${{ vars.STEAM_FIRST_DEPOT_ID }}
           buildDescription: \${{ github.ref_name }}
-          rootPath: .kiln/build
+          rootPath: .cartridge/build
           depot1Path: windows
           depot2Path: macos
           depot3Path: linux

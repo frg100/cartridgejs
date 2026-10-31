@@ -8,17 +8,17 @@ import { findSteamcmd } from './upload.js';
 
 type Level = 'ok' | 'warn' | 'error';
 
-/** `kiln doctor`: check the project before a release. Returns the number of errors. */
+/** `cartridge doctor`: check the project before a release. Returns the number of errors. */
 export async function doctor(): Promise<number> {
   const root = process.cwd();
   const checks: { level: Level; msg: string; hint?: string }[] = [];
   const add = (level: Level, msg: string, hint?: string) => checks.push({ level, msg, hint });
 
   const major = Number(process.versions.node.split('.')[0]);
-  add(major >= 20 ? 'ok' : 'error', `Node.js ${process.versions.node}`, major >= 20 ? undefined : 'kiln needs Node.js 20 or newer.');
+  add(major >= 20 ? 'ok' : 'error', `Node.js ${process.versions.node}`, major >= 20 ? undefined : 'cartridge needs Node.js 20 or newer.');
 
   if (!findConfigFile(root)) {
-    add('error', 'No kiln config', 'Run `kiln init`.');
+    add('error', 'No cartridge config', 'Run `cartridge init`.');
     return report(checks);
   }
 
@@ -35,14 +35,14 @@ export async function doctor(): Promise<number> {
 
   const pkg = readPackageJson(root);
   const deps = { ...pkg?.dependencies, ...pkg?.devDependencies };
-  if (deps['@kiln/steam']) add('ok', '@kiln/steam is installed');
-  else add('warn', '@kiln/steam is not a dependency', 'Install it to use achievements, cloud saves and the overlay.');
+  if (deps['@cartridgejs/steam']) add('ok', '@cartridgejs/steam is installed');
+  else add('warn', '@cartridgejs/steam is not a dependency', 'Install it to use achievements, cloud saves and the overlay.');
 
   const rel = (p: string) => path.relative(root, p) || '.';
   if (config.web.build) add('ok', `Web build command: ${config.web.build}`);
-  else add('warn', 'No web build command', 'Add a "build" script or set `web.build`. kiln will package the folder as it is.');
+  else add('warn', 'No web build command', 'Add a "build" script or set `web.build`. cartridge will package the folder as it is.');
   if (fs.existsSync(path.join(config.web.dir, 'index.html'))) add('ok', `Built game found in ${rel(config.web.dir)}/`);
-  else add('warn', `No index.html in ${rel(config.web.dir)}/ yet`, 'Run `kiln build`; it builds the web game first.');
+  else add('warn', `No index.html in ${rel(config.web.dir)}/ yet`, 'Run `cartridge build`; it builds the web game first.');
 
   const appId = config.steam.appId;
   if (!appId) add('warn', 'No steam.appId', 'Set 480 (Spacewar) to test Steam features before you have an App ID.');
@@ -67,15 +67,15 @@ export async function doctor(): Promise<number> {
   }
 
   const built = builtPlatforms(config);
-  add(built.length ? 'ok' : 'warn', built.length ? `Builds: ${built.join(', ')}` : 'No builds yet', built.length ? undefined : 'Run `kiln build`.');
+  add(built.length ? 'ok' : 'warn', built.length ? `Builds: ${built.join(', ')}` : 'No builds yet', built.length ? undefined : 'Run `cartridge build`.');
 
   const steamcmd = findSteamcmd();
   if (steamcmd) add('ok', `steamcmd: ${steamcmd}`);
-  else add('warn', 'steamcmd not found', 'Needed only for `kiln upload`. Set STEAMCMD or add it to PATH.');
+  else add('warn', 'steamcmd not found', 'Needed only for `cartridge upload`. Set STEAMCMD or add it to PATH.');
 
   if (config.devtools) add('warn', 'devtools is on for release builds', 'Players can open DevTools with F12.');
   if (config.platforms.includes('macos')) {
-    add('warn', 'macOS builds are not signed or notarized by kiln yet', 'Steam starts unsigned apps, but sign them if you can.');
+    add('warn', 'macOS builds are not signed or notarized by cartridge yet', 'Steam starts unsigned apps, but sign them if you can.');
   }
 
   return report(checks);

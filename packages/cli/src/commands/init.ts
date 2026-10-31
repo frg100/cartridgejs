@@ -2,7 +2,7 @@ import { spawnSync } from 'node:child_process';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { detectPackageManager, findConfigFile, readPackageJson, slugify } from '../config.js';
-import { c, KilnError, log } from '../log.js';
+import { c, CartridgeError, log } from '../log.js';
 import { configTemplate, workflowTemplate } from '../templates.js';
 
 export interface InitFlags {
@@ -12,10 +12,10 @@ export interface InitFlags {
 }
 
 const SCRIPTS: Record<string, string> = {
-  'desktop:dev': 'kiln dev',
-  'desktop:preview': 'kiln preview',
-  'desktop:build': 'kiln build',
-  'steam:upload': 'kiln upload',
+  'desktop:dev': 'cartridge dev',
+  'desktop:preview': 'cartridge preview',
+  'desktop:build': 'cartridge build',
+  'steam:upload': 'cartridge upload',
 };
 
 /** Guess the web build folder and dev URL from the project's tools. */
@@ -32,7 +32,7 @@ export async function init(flags: InitFlags): Promise<void> {
   const root = process.cwd();
   const pkg = readPackageJson(root);
   if (!pkg) {
-    throw new KilnError('No package.json here.', 'Run `kiln init` in your game folder, or start a new game with `npm create kiln-game`.');
+    throw new CartridgeError('No package.json here.', 'Run `cartridge init` in your game folder, or start a new game with `npm create cartridge-game`.');
   }
 
   const existing = findConfigFile(root);
@@ -44,8 +44,8 @@ export async function init(flags: InitFlags): Promise<void> {
   if (existing && !flags.force) {
     log.ok(`${path.basename(existing)} is already here ${c.dim('(use --force to replace it)')}`);
   } else {
-    fs.writeFileSync(path.join(root, 'kiln.config.mjs'), configTemplate({ name, id, webDir: web.webDir, devUrl: web.devUrl }));
-    log.ok(`Wrote kiln.config.mjs ${c.dim(`(web tool: ${web.tool})`)}`);
+    fs.writeFileSync(path.join(root, 'cartridge.config.mjs'), configTemplate({ name, id, webDir: web.webDir, devUrl: web.devUrl }));
+    log.ok(`Wrote cartridge.config.mjs ${c.dim(`(web tool: ${web.tool})`)}`);
   }
 
   pkg.scripts ??= {};
@@ -63,9 +63,9 @@ export async function init(flags: InitFlags): Promise<void> {
 
   const gi = path.join(root, '.gitignore');
   const giText = fs.existsSync(gi) ? fs.readFileSync(gi, 'utf8') : '';
-  if (!/^\/?\.kiln\/?$/m.test(giText)) {
-    fs.writeFileSync(gi, giText + (giText && !giText.endsWith('\n') ? '\n' : '') + '.kiln/\n');
-    log.ok('Added .kiln/ to .gitignore');
+  if (!/^\/?\.cartridge\/?$/m.test(giText)) {
+    fs.writeFileSync(gi, giText + (giText && !giText.endsWith('\n') ? '\n' : '') + '.cartridge/\n');
+    log.ok('Added .cartridge/ to .gitignore');
   }
 
   if (flags.ci) {
@@ -81,14 +81,14 @@ export async function init(flags: InitFlags): Promise<void> {
 
   const deps = { ...pkg.dependencies, ...pkg.devDependencies };
   const installs: string[][] = [];
-  if (!deps['@kiln/steam']) installs.push(addCmd(pm, ['@kiln/steam'], false));
-  if (!deps['@kiln/cli']) installs.push(addCmd(pm, ['@kiln/cli'], true));
+  if (!deps['@cartridgejs/steam']) installs.push(addCmd(pm, ['@cartridgejs/steam'], false));
+  if (!deps['@cartridgejs/cli']) installs.push(addCmd(pm, ['@cartridgejs/cli'], true));
 
   if (installs.length && flags.install) {
     for (const cmd of installs) {
       log.step(cmd.join(' '));
       const r = spawnSync(cmd[0]!, cmd.slice(1), { stdio: 'inherit', cwd: root, shell: process.platform === 'win32' });
-      if (r.status !== 0) throw new KilnError(`Install failed: ${cmd.join(' ')}`);
+      if (r.status !== 0) throw new CartridgeError(`Install failed: ${cmd.join(' ')}`);
     }
   }
 
@@ -97,7 +97,7 @@ export async function init(flags: InitFlags): Promise<void> {
   if (installs.length && !flags.install) for (const cmd of installs) log.info(c.cyan(cmd.join(' ')));
   log.info(`${c.cyan(`${pm} run desktop:dev`)}     open the game in a desktop window`);
   log.info(`${c.cyan(`${pm} run desktop:build`)}   make Windows, macOS and Linux builds`);
-  log.info(`${c.cyan('kiln doctor')}             check the project before release`);
+  log.info(`${c.cyan('cartridge doctor')}             check the project before release`);
 }
 
 function addCmd(pm: string, pkgs: string[], dev: boolean): string[] {

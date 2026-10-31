@@ -1,7 +1,7 @@
 import { spawn, spawnSync, type ChildProcess, type SpawnOptions } from 'node:child_process';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import { KilnError } from './log.js';
+import { CartridgeError } from './log.js';
 
 /** Run a shell command and wait. Throws when the exit code is not 0. */
 export function runShell(command: string, cwd: string, env?: NodeJS.ProcessEnv): Promise<void> {
@@ -10,7 +10,7 @@ export function runShell(command: string, cwd: string, env?: NodeJS.ProcessEnv):
     child.on('error', reject);
     child.on('exit', (code, signal) => {
       if (code === 0) resolve();
-      else reject(new KilnError(`Command failed (${signal ?? `exit ${code}`}): ${command}`));
+      else reject(new CartridgeError(`Command failed (${signal ?? `exit ${code}`}): ${command}`));
     });
   });
 }
@@ -56,13 +56,13 @@ export async function isUp(url: string): Promise<boolean> {
 export async function waitForUrl(url: string, timeoutMs: number, aborted: () => boolean): Promise<void> {
   const end = Date.now() + timeoutMs;
   while (Date.now() < end) {
-    if (aborted()) throw new KilnError('The dev server stopped before it was ready.');
+    if (aborted()) throw new CartridgeError('The dev server stopped before it was ready.');
     if (await isUp(url)) return;
     await new Promise((r) => setTimeout(r, 300));
   }
-  throw new KilnError(
+  throw new CartridgeError(
     `The dev server did not answer at ${url} in ${Math.round(timeoutMs / 1000)}s.`,
-    'Set `web.devUrl` in the kiln config to the URL that your dev server prints.',
+    'Set `web.devUrl` in the cartridge config to the URL that your dev server prints.',
   );
 }
 

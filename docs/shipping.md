@@ -5,7 +5,7 @@
 1. Join Steamworks (https://partner.steamgames.com) and pay the app fee. You get an **App ID**.
 2. **SteamPipe › Depots**: make one depot for each platform (for example Windows, macOS, Linux).
    Set the OS of each depot. Put the depot IDs in `steam.depots`.
-3. **Installation › General**: add one launch option for each platform. `kiln build` prints the values:
+3. **Installation › General**: add one launch option for each platform. `cartridge build` prints the values:
 
    | OS | Executable | Arguments |
    |---|---|---|
@@ -20,9 +20,9 @@
 ## 2. Your project
 
 ```bash
-npx kiln init          # once
-npx kiln doctor        # fix the errors; read the warnings
-npx kiln build         # .kiln/build/{windows,macos,linux}
+npx cartridge init          # once
+npx cartridge doctor        # fix the errors; read the warnings
+npx cartridge build         # .cartridge/build/{windows,macos,linux}
 ```
 
 Test each build on its OS before you upload. The Linux build also runs on Steam Deck.
@@ -32,7 +32,7 @@ Test each build on its OS before you upload. The Linux build also runs on Steam 
 Install steamcmd (https://developer.valvesoftware.com/wiki/SteamCMD), then:
 
 ```bash
-STEAM_USERNAME=my_builder npx kiln upload --branch beta
+STEAM_USERNAME=my_builder npx cartridge upload --branch beta
 ```
 
 The first time, Steam Guard asks for a code. steamcmd keeps the login after that.
@@ -42,7 +42,7 @@ Use `--dry-run` to see the SteamPipe scripts, or `--preview` to let Steam check 
 
 ## 4. CI (optional)
 
-`kiln init --ci` writes `.github/workflows/steam.yml`. It builds each platform on its own OS (so the macOS build is universal)
+`cartridge init --ci` writes `.github/workflows/steam.yml`. It builds each platform on its own OS (so the macOS build is universal)
 and uploads with [game-ci/steam-deploy](https://github.com/game-ci/steam-deploy). Read the comments at the top of the file
 for the secrets and variables it needs.
 
@@ -54,5 +54,5 @@ for the secrets and variables it needs.
 
 ## macOS
 
-kiln does not sign or notarize yet. Steam can start unsigned apps, but some players may see a warning. Sign the `.app` with
+cartridge does not sign or notarize yet. Steam can start unsigned apps, but some players may see a warning. Sign the `.app` with
 `codesign` (and notarize) before upload if you have an Apple Developer account.

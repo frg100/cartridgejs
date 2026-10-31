@@ -1,4 +1,4 @@
-// Smoke test: start a packaged Linux build (or `kiln preview`) and check the game.
+// Smoke test: start a packaged Linux build (or `cartridge preview`) and check the game.
 // Usage: xvfb-run -a node scripts/smoke.mjs <path-to-executable>
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
@@ -8,7 +8,7 @@ try { playwright = require('playwright'); } catch { playwright = require(require
 const exe = process.argv[2];
 if (!exe) { console.error('usage: node scripts/smoke.mjs <executable>'); process.exit(2); }
 
-const app = await playwright._electron.launch({ executablePath: exe, args: [], env: { ...process.env, KILN_NO_STEAM: process.env.KILN_NO_STEAM ?? '' } });
+const app = await playwright._electron.launch({ executablePath: exe, args: [], env: { ...process.env, CARTRIDGE_NO_STEAM: process.env.CARTRIDGE_NO_STEAM ?? '' } });
 const logs = [];
 app.process().stdout?.on('data', (d) => logs.push(String(d).trim()));
 const page = await app.firstWindow();
@@ -16,8 +16,8 @@ page.on('console', (m) => logs.push(`[page] ${m.text()}`));
 await page.waitForFunction(() => !!window.__game, null, { timeout: 15000 });
 
 const result = await page.evaluate(async () => {
-  const status = await window.__kiln.invoke('steam.status');
-  const info = await window.__kiln.invoke('app.info');
+  const status = await window.__cartridge.invoke('steam.status');
+  const info = await window.__cartridge.invoke('app.info');
   for (let i = 0; i < 10; i++) await window.__game.onScore();
   const gl = document.createElement('canvas').getContext('webgl2');
   return {
@@ -27,8 +27,8 @@ const result = await page.evaluate(async () => {
     info,
     score: window.__game.score(),
     best: document.querySelector('#best').textContent,
-    savedLocally: localStorage.getItem('kiln:cloud:save.json'),
-    achievements: localStorage.getItem('kiln:achievements'),
+    savedLocally: localStorage.getItem('cartridge:cloud:save.json'),
+    achievements: localStorage.getItem('cartridge:achievements'),
     webgl2: !!gl,
     nodeLeak: typeof window.require !== 'undefined' || typeof window.process !== 'undefined',
   };

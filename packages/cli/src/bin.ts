@@ -6,20 +6,20 @@ import { doctor } from './commands/doctor.js';
 import { init } from './commands/init.js';
 import { dev, preview } from './commands/run.js';
 import { upload } from './commands/upload.js';
-import { c, KilnError, log } from './log.js';
+import { c, CartridgeError, log } from './log.js';
 
 const require = createRequire(import.meta.url);
 const VERSION = (require('../package.json') as { version: string }).version;
 
-const HELP = `${c.bold('kiln')} ${c.dim(VERSION)} — ship your three.js / WebGL game to Steam
+const HELP = `${c.bold('cartridge')} ${c.dim(VERSION)} — ship your three.js / WebGL game to Steam
 
 ${c.bold('Usage')}
-  kiln <command> [options]
+  cartridge <command> [options]
 
 ${c.bold('Commands')}
-  init                Add kiln to the game in this folder
+  init                Add cartridge to the game in this folder
       --ci            Also add a GitHub Actions workflow for Steam releases
-      --install       Install @kiln/cli and @kiln/steam
+      --install       Install @cartridgejs/cli and @cartridgejs/steam
       --force         Replace files that are already there
   dev                 Start your dev server and open the game in a desktop window
       --url <url>     Use this dev server URL (default: web.devUrl)
@@ -27,7 +27,7 @@ ${c.bold('Commands')}
   preview             Open the built game (web.dir) in a desktop window
       --build         Build the web game first
       --no-steam      Do not start Steam
-  build               Make desktop builds in .kiln/build/<platform>/
+  build               Make desktop builds in .cartridge/build/<platform>/
       --platform <p>  windows, macos, linux, all, or a list: windows,linux
       --skip-web      Do not run the web build command
   upload              Upload the builds to Steam with steamcmd
@@ -101,19 +101,19 @@ async function main(argv: string[]): Promise<number> {
     case 'doctor':
       return (await doctor()) > 0 ? 1 : 0;
     default:
-      throw new KilnError(`Unknown command "${command}".`, 'Run `kiln --help` to see the commands.');
+      throw new CartridgeError(`Unknown command "${command}".`, 'Run `cartridge --help` to see the commands.');
   }
 }
 
 main(process.argv.slice(2)).then(
   (code) => process.exit(code),
   (err: unknown) => {
-    if (err instanceof KilnError) {
+    if (err instanceof CartridgeError) {
       log.error(err.message);
       if (err.hint) log.info(c.dim(err.hint));
     } else if (err instanceof Error && (err as NodeJS.ErrnoException).code?.startsWith('ERR_PARSE_ARGS')) {
       log.error(err.message);
-      log.info(c.dim('Run `kiln --help` to see the options.'));
+      log.info(c.dim('Run `cartridge --help` to see the options.'));
     } else {
       console.error(err);
     }

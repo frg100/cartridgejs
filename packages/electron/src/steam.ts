@@ -1,9 +1,9 @@
 /**
- * Wraps steamworks.js and turns it into the method table of the kiln protocol.
+ * Wraps steamworks.js and turns it into the method table of the cartridge protocol.
  * When Steam is not available, every Steam method gives a safe empty result.
  * (The game-side library then uses its local fallback.)
  */
-import type { KilnMethods, OverlayDialog, SteamStatus } from '@kiln/steam/protocol' with { 'resolution-mode': 'import' };
+import type { CartridgeMethods, OverlayDialog, SteamStatus } from '@cartridgejs/steam/protocol' with { 'resolution-mode': 'import' };
 import type { RuntimeConfig } from './config';
 
 type SteamClient = Omit<typeof import('steamworks.js/client'), 'init' | 'runCallbacks' | 'restartAppIfNecessary'>;
@@ -48,7 +48,7 @@ export function prepareSteam(config: RuntimeConfig): void {
   try {
     sw.electronEnableSteamOverlay();
   } catch (err) {
-    console.warn('[kiln] Steam overlay setup failed:', (err as Error).message);
+    console.warn('[cartridge] Steam overlay setup failed:', (err as Error).message);
   }
 }
 
@@ -60,7 +60,7 @@ export function shouldRestartThroughSteam(config: RuntimeConfig, packaged: boole
   const appId = config.steam.appId;
   if (!appId || !packaged || config.dev || !config.steam.restartThroughSteam) return false;
   // Local test runs, and Valve's Spacewar test app, which you cannot launch from a library.
-  if (process.env.KILN_NO_STEAM === '1' || appId === 480) return false;
+  if (process.env.CARTRIDGE_NO_STEAM === '1' || appId === 480) return false;
   const sw = load();
   if (!sw) return false;
   try {
@@ -72,11 +72,11 @@ export function shouldRestartThroughSteam(config: RuntimeConfig, packaged: boole
 
 export function startSteam(config: RuntimeConfig): SteamHost {
   const base: SteamStatus = { available: false, shell: 'electron', appId: config.steam.appId };
-  if (process.env.KILN_NO_STEAM === '1') {
-    return { status: { ...base, reason: 'Steam is off (KILN_NO_STEAM=1)' } };
+  if (process.env.CARTRIDGE_NO_STEAM === '1') {
+    return { status: { ...base, reason: 'Steam is off (CARTRIDGE_NO_STEAM=1)' } };
   }
   if (!config.steam.appId) {
-    return { status: { ...base, reason: 'No steam.appId in the kiln config' } };
+    return { status: { ...base, reason: 'No steam.appId in the cartridge config' } };
   }
   const sw = load();
   if (!sw) return { status: { ...base, reason: loadError } };
@@ -104,7 +104,7 @@ export function startSteam(config: RuntimeConfig): SteamHost {
 }
 
 type SteamMethods = Pick<
-  KilnMethods,
+  CartridgeMethods,
   | 'steam.status'
   | 'achievement.unlock'
   | 'achievement.isUnlocked'

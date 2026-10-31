@@ -1,13 +1,13 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { KilnError } from './log.js';
+import { CartridgeError } from './log.js';
 
 export type Platform = 'windows' | 'macos' | 'linux';
 export const ALL_PLATFORMS: Platform[] = ['windows', 'macos', 'linux'];
 
-/** The config that you write in `kiln.config.mjs` (or `.js` / `.json`). */
-export interface KilnConfig {
+/** The config that you write in `cartridge.config.mjs` (or `.js` / `.json`). */
+export interface CartridgeConfig {
   /** The game name that players see (window title, app name). */
   name: string;
   /** Reverse-DNS id, for example `com.mystudio.mygame`. */
@@ -20,7 +20,7 @@ export interface KilnConfig {
   executableName?: string;
   /**
    * Icon path WITHOUT extension, for example `assets/icon`.
-   * kiln uses `icon.ico` (Windows), `icon.icns` (macOS) and `icon.png` (Linux).
+   * cartridge uses `icon.ico` (Windows), `icon.icns` (macOS) and `icon.png` (Linux).
    */
   icon?: string;
   /** Desktop shell. Only `electron` is available now. */
@@ -61,7 +61,7 @@ export interface KilnConfig {
     overlay?: boolean;
   };
 
-  /** Platforms that `kiln build` makes. Default: all three. */
+  /** Platforms that `cartridge build` makes. Default: all three. */
   platforms?: Platform[];
   macos?: { arch?: 'universal' | 'x64' | 'arm64'; category?: string };
   linux?: { noSandbox?: boolean };
@@ -75,12 +75,12 @@ export interface KilnConfig {
   devtools?: boolean;
   /** Keep the display awake while the game has focus. Default: true. */
   preventSleep?: boolean;
-  /** Folder for all kiln output. Default: `.kiln`. */
+  /** Folder for all cartridge output. Default: `.cartridge`. */
   outDir?: string;
 }
 
 /** Helper for typed config files: `export default defineConfig({...})`. */
-export function defineConfig(config: KilnConfig): KilnConfig {
+export function defineConfig(config: CartridgeConfig): CartridgeConfig {
   return config;
 }
 
@@ -98,7 +98,7 @@ export interface ResolvedConfig {
   shell: 'electron';
   packageManager: PackageManager;
   web: { dir: string; build: string | false; dev: string | false; devUrl: string };
-  window: Required<Omit<NonNullable<KilnConfig['window']>, 'minWidth' | 'minHeight'>> & {
+  window: Required<Omit<NonNullable<CartridgeConfig['window']>, 'minWidth' | 'minHeight'>> & {
     minWidth?: number;
     minHeight?: number;
   };
@@ -119,7 +119,7 @@ export interface ResolvedConfig {
   outDir: string;
 }
 
-export const CONFIG_FILES = ['kiln.config.mjs', 'kiln.config.js', 'kiln.config.cjs', 'kiln.config.json'];
+export const CONFIG_FILES = ['cartridge.config.mjs', 'cartridge.config.js', 'cartridge.config.cjs', 'cartridge.config.json'];
 
 export function findConfigFile(root: string): string | undefined {
   for (const f of CONFIG_FILES) {
@@ -158,14 +158,14 @@ export function readPackageJson(root: string): Record<string, any> | undefined {
   return JSON.parse(fs.readFileSync(p, 'utf8'));
 }
 
-export async function loadUserConfig(file: string): Promise<KilnConfig> {
+export async function loadUserConfig(file: string): Promise<CartridgeConfig> {
   if (file.endsWith('.json')) {
-    return JSON.parse(fs.readFileSync(file, 'utf8')) as KilnConfig;
+    return JSON.parse(fs.readFileSync(file, 'utf8')) as CartridgeConfig;
   }
-  // Cache-bust so that `kiln dev` restarts see config changes.
+  // Cache-bust so that `cartridge dev` restarts see config changes.
   const mod = await import(pathToFileURL(file).href + `?t=${Date.now()}`);
   const value = mod.default ?? mod;
-  return (typeof value === 'function' ? await value() : value) as KilnConfig;
+  return (typeof value === 'function' ? await value() : value) as CartridgeConfig;
 }
 
 function isPositiveInt(n: unknown): n is number {
@@ -173,9 +173,9 @@ function isPositiveInt(n: unknown): n is number {
 }
 
 /** Fill in defaults and check the config. Pure (except reading package.json). */
-export function resolveConfig(user: KilnConfig, root: string, configFile: string): ResolvedConfig {
+export function resolveConfig(user: CartridgeConfig, root: string, configFile: string): ResolvedConfig {
   const problems: string[] = [];
-  if (!user || typeof user !== 'object') throw new KilnError(`${configFile} must export a config object.`);
+  if (!user || typeof user !== 'object') throw new CartridgeError(`${configFile} must export a config object.`);
   if (!user.name || typeof user.name !== 'string') problems.push('`name` is required (the game name players see).');
 
   const pkg = readPackageJson(root) ?? {};
@@ -188,7 +188,7 @@ export function resolveConfig(user: KilnConfig, root: string, configFile: string
   const version = user.version ?? pkg.version ?? '0.1.0';
   if (!/^\d+\.\d+\.\d+/.test(version)) problems.push(`\`version\` must look like 1.2.3 (got "${version}").`);
 
-  const id = user.id ?? `com.kiln.${slug.replace(/-/g, '')}`;
+  const id = user.id ?? `com.cartridge.${slug.replace(/-/g, '')}`;
   if (!/^[a-zA-Z][\w-]*(\.[a-zA-Z][\w-]*)+$/.test(id)) problems.push(`\`id\` must be reverse-DNS like com.studio.game (got "${id}").`);
 
   const executableName = user.executableName ?? slug;
@@ -209,7 +209,7 @@ export function resolveConfig(user: KilnConfig, root: string, configFile: string
   if (user.shell && user.shell !== 'electron') problems.push(`\`shell\`: "${user.shell}" is not available yet. Use "electron".`);
 
   if (problems.length) {
-    throw new KilnError(`Problems in ${path.basename(configFile)}:\n  - ${problems.join('\n  - ')}`);
+    throw new CartridgeError(`Problems in ${path.basename(configFile)}:\n  - ${problems.join('\n  - ')}`);
   }
 
   const w = user.window ?? {};
@@ -255,14 +255,14 @@ export function resolveConfig(user: KilnConfig, root: string, configFile: string
     locales: user.locales ?? ['en-US'],
     devtools: user.devtools ?? false,
     preventSleep: user.preventSleep ?? true,
-    outDir: path.resolve(root, user.outDir ?? '.kiln'),
+    outDir: path.resolve(root, user.outDir ?? '.cartridge'),
   };
 }
 
 export async function loadConfig(root = process.cwd()): Promise<ResolvedConfig> {
   const file = findConfigFile(root);
   if (!file) {
-    throw new KilnError(`No kiln config found in ${root}.`, 'Run `kiln init` to make one.');
+    throw new CartridgeError(`No cartridge config found in ${root}.`, 'Run `cartridge init` to make one.');
   }
   return resolveConfig(await loadUserConfig(file), root, file);
 }

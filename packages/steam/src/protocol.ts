@@ -1,7 +1,7 @@
 /**
  * The contract between the game (renderer) and the desktop shell (main process).
  *
- * The shell's preload script exposes `window.__kiln` with this shape. Every shell
+ * The shell's preload script exposes `window.__cartridge` with this shape. Every shell
  * adapter (Electron today, Tauri later) must implement the same methods, so that
  * game code never changes when the shell changes.
  */
@@ -45,7 +45,7 @@ export type OverlayDialog =
   | 'achievements';
 
 /** Every method the shell must answer. Arguments are positional. */
-export interface KilnMethods {
+export interface CartridgeMethods {
   'steam.status': () => SteamStatus;
   'achievement.unlock': (id: string) => boolean;
   'achievement.isUnlocked': (id: string) => boolean;
@@ -69,19 +69,19 @@ export interface KilnMethods {
   'app.info': () => { name: string; version: string; packaged: boolean; platform: string };
 }
 
-export type KilnMethod = keyof KilnMethods;
+export type CartridgeMethod = keyof CartridgeMethods;
 
-export interface KilnBridge {
-  invoke<M extends KilnMethod>(
+export interface CartridgeBridge {
+  invoke<M extends CartridgeMethod>(
     method: M,
-    ...args: Parameters<KilnMethods[M]>
-  ): Promise<ReturnType<KilnMethods[M]>>;
+    ...args: Parameters<CartridgeMethods[M]>
+  ): Promise<ReturnType<CartridgeMethods[M]>>;
 }
 
 declare global {
   interface Window {
-    __kiln?: KilnBridge;
+    __cartridge?: CartridgeBridge;
   }
 }
 
-export const KILN_IPC_CHANNEL = 'kiln:invoke';
+export const CARTRIDGE_IPC_CHANNEL = 'cartridge:invoke';

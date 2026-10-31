@@ -1,5 +1,5 @@
 /**
- * Electron main process for a kiln game.
+ * Electron main process for a cartridge game.
  *
  * It reads the runtime config, starts Steam, serves the game from the
  * `app://game/` protocol (so ES modules, fetch() and workers act the same as
@@ -9,19 +9,19 @@ import { app, BrowserWindow, ipcMain, Menu, net, powerSaveBlocker, protocol, she
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { pathToFileURL } from 'node:url';
-import type { KilnMethods } from '@kiln/steam/protocol' with { 'resolution-mode': 'import' };
+import type { CartridgeMethods } from '@cartridgejs/steam/protocol' with { 'resolution-mode': 'import' };
 import type { RuntimeConfig } from './config';
 import { prepareSteam, shouldRestartThroughSteam, startSteam, steamMethods } from './steam';
 
-const IPC_CHANNEL = 'kiln:invoke';
+const IPC_CHANNEL = 'cartridge:invoke';
 const SCHEME = 'app';
 const HOST = 'game';
 
 function loadConfig(): { config: RuntimeConfig; baseDir: string } {
-  const file = process.env.KILN_RUNTIME_CONFIG ?? path.join(__dirname, 'runtime.json');
+  const file = process.env.CARTRIDGE_RUNTIME_CONFIG ?? path.join(__dirname, 'runtime.json');
   const config = JSON.parse(fs.readFileSync(file, 'utf8')) as RuntimeConfig;
-  // In a packaged app, `entry.dir` is relative to the app root (the parent of kiln/).
-  const baseDir = process.env.KILN_RUNTIME_CONFIG ? path.dirname(file) : path.resolve(__dirname, '..');
+  // In a packaged app, `entry.dir` is relative to the app root (the parent of cartridge/).
+  const baseDir = process.env.CARTRIDGE_RUNTIME_CONFIG ? path.dirname(file) : path.resolve(__dirname, '..');
   return { config, baseDir };
 }
 
@@ -111,7 +111,7 @@ function setMenu(): void {
 
 function createWindow(): BrowserWindow {
   const w = config.window;
-  const devtools = config.devtools || config.dev || process.argv.includes('--kiln-devtools');
+  const devtools = config.devtools || config.dev || process.argv.includes('--cartridge-devtools');
   const bw = new BrowserWindow({
     title: config.name,
     width: w.width,
@@ -191,9 +191,9 @@ void app.whenReady().then(async () => {
 
   const steamHost = startSteam(config);
   if (steamHost.status.available) {
-    console.log(`[kiln] Steam ready (app ${config.steam.appId})`);
+    console.log(`[cartridge] Steam ready (app ${config.steam.appId})`);
   } else {
-    console.log(`[kiln] Steam not available: ${steamHost.status.reason}`);
+    console.log(`[cartridge] Steam not available: ${steamHost.status.reason}`);
     if (config.steam.required && !config.dev) {
       await dialog.showMessageBox({
         type: 'error',
@@ -209,7 +209,7 @@ void app.whenReady().then(async () => {
   const root = gameRoot();
   if (root) registerGameProtocol(root);
 
-  const methods: KilnMethods = {
+  const methods: CartridgeMethods = {
     ...steamMethods(steamHost),
     'app.quit': () => {
       setImmediate(() => app.quit());
@@ -225,11 +225,11 @@ void app.whenReady().then(async () => {
   };
 
   ipcMain.handle(IPC_CHANNEL, (event, method: unknown, args: unknown) => {
-    if (!win || event.sender !== win.webContents) throw new Error('kiln: unknown sender');
+    if (!win || event.sender !== win.webContents) throw new Error('cartridge: unknown sender');
     if (typeof method !== 'string' || !Object.prototype.hasOwnProperty.call(methods, method)) {
-      throw new Error(`kiln: unknown method ${String(method)}`);
+      throw new Error(`cartridge: unknown method ${String(method)}`);
     }
-    const fn = methods[method as keyof KilnMethods] as (...a: unknown[]) => unknown;
+    const fn = methods[method as keyof CartridgeMethods] as (...a: unknown[]) => unknown;
     return fn(...(Array.isArray(args) ? args : []));
   });
 
