@@ -5,7 +5,8 @@ together with the same version. `create-cartridgejs` gives new games `^<its own 
 
 ## One time
 
-1. Own the npm scope: `npm org create cartridgejs` (free for public packages).
+1. Own the npm scope: make the org `cartridgejs` at https://www.npmjs.com/org/create (the free plan allows
+   unlimited public packages). The npm CLI cannot create orgs. Check it with `npm org ls cartridgejs`.
 2. Make an npm access token that can publish `@cartridgejs/*` and `create-cartridgejs`
    (npmjs.com › Access Tokens › Generate New Token › Granular, read and write).
 3. Add it to GitHub: repo › Settings › Secrets and variables › Actions › New secret › `NPM_TOKEN`.
