@@ -178,6 +178,11 @@ export const electronShell: ShellAdapter = {
       appCopyright: `© ${new Date().getFullYear()} ${config.publisher}`,
       icon: iconFor(config, platform),
       asar: { unpack: '**/node_modules/steamworks.js/dist/**' },
+      // steamworks.js ships one .node file per Mac CPU and a universal libsteam_api.dylib.
+      // They are the same in the x64 and arm64 builds, so copy them as they are (no lipo).
+      osxUniversal: {
+        x64ArchFiles: 'Contents/Resources/app.asar.unpacked/node_modules/steamworks.js/dist/osx/*',
+      },
       prune: false,
       overwrite: true,
       quiet: true,
